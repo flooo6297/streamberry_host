@@ -46,6 +46,9 @@ add_subdirectory(${FLUTTER_MANAGED_DIR})
 # Application build
 add_subdirectory("runner")
 
+# Volume Control
+add_subdirectory("volume_library")
+
 # Generated plugin build rules, which manage building the plugins and adding
 # them to the application.
 include(flutter/generated_plugins.cmake)
@@ -93,3 +96,5 @@ install(DIRECTORY "${PROJECT_BUILD_DIR}/${FLUTTER_ASSET_DIR_NAME}"
 install(FILES "${AOT_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_DATA_DIR}"
   CONFIGURATIONS Profile;Release
   COMPONENT Runtime)
+
+

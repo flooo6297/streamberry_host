@@ -7,33 +7,56 @@ import 'package:streamberry_host/src/blocs/button_panel/button_panel_state.dart'
 
 class ButtonPanelCubit extends Cubit<ButtonPanelState> {
 
-  ButtonPanelCubit._(ButtonPanelState initialState) : super(initialState) {
-    //loadTesting();
-  }
 
-  static ButtonPanelCubit init(int x, int y) {
-    ButtonPanelState initialState = ButtonPanelState(x, y, const Size(100, 100),
-        Colors.black87, const EdgeInsets.all(8.0)); //TODO: Implement loading from disk
-    return ButtonPanelCubit._(initialState);
+  List<int> path = [];
+
+  ButtonPanelCubit._(ButtonPanelState initialState,)
+      : super(initialState);
+
+  static ButtonPanelCubit init(int x, int y,
+      {ButtonData? parentButtonData,
+      ButtonPanelCubit? parentButtonPanelCubit}) {
+    ButtonPanelState initialState = ButtonPanelState(
+        x,
+        y,
+        const Size(100, 100),
+        Colors.black87,
+        const EdgeInsets.all(8.0)); //TODO: Implement loading from disk
+    return ButtonPanelCubit._(initialState,);
   }
 
   ButtonPanelCubit(ButtonPanelState initialState) : super(initialState);
 
+  ButtonPanelState getState() {
+    ButtonPanelState cur = state;
+    for (var value in path) {
+      cur = cur.panelList[value].childState!;
+    }
+    return cur;
+  }
+
   void selectButton(ButtonData buttonToSelect) {
-    state.selectedButton = buttonToSelect;
+    getState().selectedButton = buttonToSelect;
     refresh();
   }
 
+  ButtonData? getSelectedButton() {
+    if (getState().selectedButton == null) {
+      return null;
+    }
+    return getState().panelList.firstWhere((element) => element.equals(getState().selectedButton!));
+  }
+
   void refresh() {
-    emit(ButtonPanelState.copy(state));
+    _saveAndSync();
   }
 
   bool setNewGridSize(int x, int y) {
-    int oldX = state.xSize;
-    int oldY = state.ySize;
+    int oldX = getState().xSize;
+    int oldY = getState().ySize;
 
-    state.ySize = y;
-    state.xSize = x;
+    getState().ySize = y;
+    getState().xSize = x;
 
     bool toReturn = true;
 
@@ -42,8 +65,8 @@ class ButtonPanelCubit extends Cubit<ButtonPanelState> {
     }
     if (x < oldX) {
       if (!removeColsOnRight(oldX - x)) {
-        state.ySize = oldY;
-        state.xSize = oldX;
+        getState().ySize = oldY;
+        getState().xSize = oldX;
         toReturn = false;
       }
     }
@@ -52,21 +75,21 @@ class ButtonPanelCubit extends Cubit<ButtonPanelState> {
     }
     if (y < oldY) {
       if (!removeRowsOnBottom(oldY - y)) {
-        state.ySize = oldY;
-        state.xSize = oldX;
+        getState().ySize = oldY;
+        getState().xSize = oldX;
         toReturn = false;
       }
     }
 
-    emit(ButtonPanelState.copy(state));
+    _saveAndSync();
     return toReturn;
   }
 
   void addColsOnRight(int numColsToAdd) {
     List<ButtonData> newButtons = [];
     for (int i = 0; i < numColsToAdd; i++) {
-      for (int j = 0; j < state.ySize; j++) {
-        newButtons.add(ButtonData(state.xSize - 1 - i, j, enabled: false));
+      for (int j = 0; j < getState().ySize; j++) {
+        newButtons.add(ButtonData(getState().xSize - 1 - i, j, enabled: false));
       }
     }
     addButtons(newButtons);
@@ -74,12 +97,12 @@ class ButtonPanelCubit extends Cubit<ButtonPanelState> {
 
   bool removeColsOnRight(int numColsToRemove) {
     ButtonData canNotOverlap =
-        ButtonData(state.xSize, 0, width: numColsToRemove, height: state.ySize);
+        ButtonData(getState().xSize, 0, width: numColsToRemove, height: getState().ySize);
 
     List<ButtonData> buttonsToRemove = getOverlappingButtons(canNotOverlap);
 
     if (buttonsToRemove
-        .where((element) => element.positionX < state.xSize)
+        .where((element) => element.positionX < getState().xSize)
         .isNotEmpty) {
       return false;
     }
@@ -92,8 +115,8 @@ class ButtonPanelCubit extends Cubit<ButtonPanelState> {
   void addRowsOnBottom(int numRowsToAdd) {
     List<ButtonData> newButtons = [];
     for (int i = 0; i < numRowsToAdd; i++) {
-      for (int j = 0; j < state.xSize; j++) {
-        newButtons.add(ButtonData(j, state.ySize - 1 - i, enabled: false));
+      for (int j = 0; j < getState().xSize; j++) {
+        newButtons.add(ButtonData(j, getState().ySize - 1 - i, enabled: false));
       }
     }
     addButtons(newButtons);
@@ -101,12 +124,12 @@ class ButtonPanelCubit extends Cubit<ButtonPanelState> {
 
   bool removeRowsOnBottom(int numRowsToRemove) {
     ButtonData canNotOverlap =
-        ButtonData(0, state.ySize, width: state.xSize, height: numRowsToRemove);
+        ButtonData(0, getState().ySize, width: getState().xSize, height: numRowsToRemove);
 
     List<ButtonData> buttonsToRemove = getOverlappingButtons(canNotOverlap);
 
     if (buttonsToRemove
-        .where((element) => element.positionY < state.ySize)
+        .where((element) => element.positionY < getState().ySize)
         .isNotEmpty) {
       return false;
     }
@@ -117,17 +140,18 @@ class ButtonPanelCubit extends Cubit<ButtonPanelState> {
   }
 
   bool addButtons(List<ButtonData> newButtons) {
-    emit(state..panelList.addAll(newButtons));
+    getState().panelList.addAll(newButtons);
+    _saveAndSync();
     return false;
   }
 
   void removeButtons(List<ButtonData> buttons) {
-    state.panelList.removeWhere((toDeleteMaybe) =>
+    getState().panelList.removeWhere((toDeleteMaybe) =>
         buttons.where((toCheck) => toCheck.equals(toDeleteMaybe)).isNotEmpty);
   }
 
   List<ButtonData> getOverlappingButtons(ButtonData buttonData) {
-    return state.panelList
+    return getState().panelList
         .where((button) =>
             buttonData.overlaps(button) && !buttonData.equals(button))
         .toList();
@@ -143,7 +167,7 @@ class ButtonPanelCubit extends Cubit<ButtonPanelState> {
 
   void _setButtonsEnableStatus(List<ButtonData> buttons, bool status) {
     for (int i = 0; i < buttons.length; i++) {
-      for (ButtonData buttonData in state.panelList) {
+      for (ButtonData buttonData in getState().panelList) {
         if (buttonData.equals(buttons[i])) {
           buttonData.enabled = status;
         }
@@ -183,5 +207,31 @@ class ButtonPanelCubit extends Cubit<ButtonPanelState> {
 
     return getOverlappingButtons(buttonToCheck)
       ..removeWhere((element) => element.equals(buttonData));
+  }
+
+  void removeSelectedButton() {
+    if (getState().selectedButton != null) {
+      List<ButtonData> newButtons = [];
+      for (int i = getState().selectedButton!.positionX;
+          i < getState().selectedButton!.positionX + getState().selectedButton!.width;
+          i++) {
+        for (int j = getState().selectedButton!.positionY;
+            j < getState().selectedButton!.positionY + getState().selectedButton!.height;
+            j++) {
+          newButtons.add(ButtonData(i, j, enabled: false));
+        }
+      }
+      removeButtons([getState().selectedButton!]);
+      getState().selectedButton = null;
+      addButtons(newButtons);
+    }
+  }
+
+  ButtonData? getButtonData(ButtonData buttonData) {
+    return getState().panelList.firstWhere((element) => element.equals(buttonData));
+  }
+
+  void _saveAndSync() {
+    emit(ButtonPanelState.copy(state));
   }
 }

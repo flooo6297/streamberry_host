@@ -1,42 +1,46 @@
 import 'package:flutter/cupertino.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_data.dart';
+import 'package:streamberry_host/src/blocs/button_panel/button_functions/audio/audio_functions.dart';
+import 'package:streamberry_host/src/blocs/button_panel/button_functions/folder/actions/open_folder_action.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_functions/folder/folder_functions.dart';
+import 'package:streamberry_host/src/blocs/button_panel/button_functions/on_click.dart';
 
 import 'button_action.dart';
 
 abstract class ButtonFunctions{
   //List<Function()> actions();
 
-  Map<String, ButtonAction> actions();
+  Map<String, ButtonAction> actions(Map<String, String> params);
 
   get title;
 
+  get function;
+
   static Map<String, ButtonFunctions> functions = {
-    'folderFunctions': FolderFunctions(),
+    FolderFunctions().function: FolderFunctions(),
+    AudioFunctions().function: AudioFunctions(),
   };
 
-  Future<void> parseAction(List<String> action, BuildContext context) async {
-    if (actions().keys.contains(action[0])) {
-      await actions()[action]!.runFunction(context, action..removeAt(0));
+  static Future<void> runActions(ButtonData buttonData, BuildContext context) async {
+    List<ButtonAction> allActions = getActions(buttonData);
+    for (var action in allActions) {
+      action.runFunction(context);
     }
-    return Future.value();
   }
 
-  static Future<void> parse(ButtonData buttonData, BuildContext context) async {
+  static List<ButtonAction> getActions(ButtonData buttonData) {
 
-    for (String function in buttonData.functions) {
-      List<String> path = function.split(':');
-      if (path.length > 1) {
-        if (path[0] == 'folderFunctions') {
-          (functions[path[0]] as FolderFunctions).parseFolderAction(context, path..removeAt(0), buttonData);
-        } else if (functions.keys.contains(path[0])) {
-          await functions[path[0]]!.parseAction(path..removeAt(0), context);
+    List<ButtonAction> toReturn = [];
+
+    for (OnClick onClick in buttonData.onClicks) {
+      if (ButtonFunctions.functions.containsKey(onClick.function)) {
+        if (ButtonFunctions.functions[onClick.function]!.actions(onClick.params).containsKey(onClick.action)) {
+          toReturn.add(ButtonFunctions.functions[onClick.function]!.actions(onClick.params)[onClick.action]!);
         }
       }
     }
 
-    return Future.value();
-
+    return toReturn;
   }
 
 }

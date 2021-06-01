@@ -18,15 +18,14 @@ ButtonPanelState _$ButtonPanelStateFromJson(Map<String, dynamic> json) {
     ..panelList = (json['panelList'] as List<dynamic>)
         .map((e) => ButtonData.fromJson(e as Map<String, dynamic>))
         .toList()
-    ..selectedButton = json['selectedButton'] == null
-        ? null
-        : ButtonData.fromJson(json['selectedButton'] as Map<String, dynamic>);
+    ..nonDefinedButtonDesign = ButtonData.fromJson(
+        json['nonDefinedButtonDesign'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$ButtonPanelStateToJson(ButtonPanelState instance) =>
     <String, dynamic>{
       'panelList': instance.panelList,
-      'selectedButton': instance.selectedButton,
+      'nonDefinedButtonDesign': instance.nonDefinedButtonDesign,
       'gridTilingSize': const SizeSerializer().toJson(instance.gridTilingSize),
       'backgroundColor':
           const ColorSerializer().toJson(instance.backgroundColor),

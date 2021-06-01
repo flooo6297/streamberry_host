@@ -2,35 +2,33 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:streamberry_host/src/blocs/button_panel/button_functions/on_click.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_panel_state.dart';
 import 'package:streamberry_host/src/json_converters/color_serializer.dart';
-import 'package:streamberry_host/src/json_converters/edge_insets_serializer.dart';
 
 part 'button_data.g.dart';
 
 @JsonSerializable()
 class ButtonData {
-
   @ColorSerializer()
   late Color color;
-
 
   late int height;
   late int width;
   late int positionX;
   late int positionY;
 
-  List<String> functions = [];
+  List<OnClick> onClicks = [];
   late bool enabled;
 
   @JsonKey(defaultValue: null)
   ButtonPanelState? childState;
 
-  get canBeOverwritten => (!enabled && functions.isEmpty);
+  get canBeOverwritten => (!enabled && onClicks.isEmpty);
 
   void delete() {
     enabled = false;
-    functions.clear();
+    onClicks.clear();
   }
 
   ButtonData(
@@ -39,12 +37,12 @@ class ButtonData {
     this.color = Colors.white24,
     this.height = 1,
     this.width = 1,
-    List<String> functions = const [],
+    List<OnClick> onClicks = const [],
     this.enabled = true,
     this.childState,
   })  : assert(height > 0),
         assert(width > 0) {
-    this.functions.addAll(functions);
+    this.onClicks.addAll(onClicks);
   }
 
   ButtonData.copy(ButtonData buttonData) {
@@ -53,7 +51,7 @@ class ButtonData {
     color = buttonData.color;
     height = buttonData.height;
     width = buttonData.width;
-    functions.addAll(buttonData.functions);
+    onClicks.addAll(buttonData.onClicks);
     enabled = buttonData.enabled;
   }
 
@@ -77,22 +75,12 @@ class ButtonData {
 
   bool equals(ButtonData buttonData) {
     bool actionListsAreSame = true;
-    if (functions.length != buttonData.functions.length) {
+    if (onClicks.length != buttonData.onClicks.length) {
       actionListsAreSame = false;
     } else {
-      if (functions.length > buttonData.functions.length) {
-        for (String action in functions) {
-          if (buttonData.functions
-              .where((element) => element == action)
-              .isEmpty) {
-            actionListsAreSame = false;
-          }
-        }
-      } else {
-        for (String action in buttonData.functions) {
-          if (functions.where((element) => element == action).isEmpty) {
-            actionListsAreSame = false;
-          }
+      for (int i = 0; i < onClicks.length; i++) {
+        if (!onClicks[i].equals(buttonData.onClicks[i])) {
+          actionListsAreSame = false;
         }
       }
     }
@@ -106,9 +94,8 @@ class ButtonData {
         enabled == buttonData.enabled;
   }
 
-
-  factory ButtonData.fromJson(Map<String, dynamic> json) => _$ButtonDataFromJson(json);
+  factory ButtonData.fromJson(Map<String, dynamic> json) =>
+      _$ButtonDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$ButtonDataToJson(this);
-
 }

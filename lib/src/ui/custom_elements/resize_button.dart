@@ -69,7 +69,7 @@ class ResizeButton extends StatelessWidget {
           context.read<ButtonPanelCubit>().getButtonsOnRight(buttonData);
       List<ButtonData> buttonsOnRightWithFunction =
           buttonsOnRight.where((button) => !button.canBeOverwritten).toList();
-      show1 = buttonData.positionX + buttonData.width < context.read<ButtonPanelCubit>().state.xSize && buttonsOnRightWithFunction.isEmpty;
+      show1 = buttonData.positionX + buttonData.width < context.read<ButtonPanelCubit>().getState().xSize && buttonsOnRightWithFunction.isEmpty;
       show2 = buttonData.width > 1;
       if (buttonData.canBeOverwritten) {
         show1 = false;
@@ -104,7 +104,7 @@ class ResizeButton extends StatelessWidget {
       context.read<ButtonPanelCubit>().getButtonsOnBottom(buttonData);
       List<ButtonData> buttonsOnBottomWithFunction =
       buttonsOnBottom.where((button) => !button.canBeOverwritten).toList();
-      show1 = buttonData.positionY + buttonData.height < context.read<ButtonPanelCubit>().state.ySize && buttonsOnBottomWithFunction.isEmpty;
+      show1 = buttonData.positionY + buttonData.height < context.read<ButtonPanelCubit>().getState().ySize && buttonsOnBottomWithFunction.isEmpty;
       show2 = buttonData.height > 1;
       if (buttonData.canBeOverwritten) {
         show1 = false;

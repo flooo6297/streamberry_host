@@ -13,8 +13,9 @@ ButtonData _$ButtonDataFromJson(Map<String, dynamic> json) {
     color: const ColorSerializer().fromJson(json['color'] as int),
     height: json['height'] as int,
     width: json['width'] as int,
-    functions:
-        (json['functions'] as List<dynamic>).map((e) => e as String).toList(),
+    onClicks: (json['onClicks'] as List<dynamic>)
+        .map((e) => OnClick.fromJson(e as Map<String, dynamic>))
+        .toList(),
     enabled: json['enabled'] as bool,
     childState: json['childState'] == null
         ? null
@@ -29,7 +30,7 @@ Map<String, dynamic> _$ButtonDataToJson(ButtonData instance) =>
       'width': instance.width,
       'positionX': instance.positionX,
       'positionY': instance.positionY,
-      'functions': instance.functions,
+      'onClicks': instance.onClicks,
       'enabled': instance.enabled,
       'childState': instance.childState,
     };

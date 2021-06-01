@@ -12,8 +12,10 @@ class ButtonPanelState {
   late final List<ButtonData> panelList;
 
 
-  @JsonKey(defaultValue: null)
+  @JsonKey(ignore: true)
   ButtonData? selectedButton;
+
+  late ButtonData nonDefinedButtonDesign;
 
   @SizeSerializer()
   late Size gridTilingSize;
@@ -32,6 +34,8 @@ class ButtonPanelState {
   this.margin) {
     panelList = [];
 
+    nonDefinedButtonDesign = ButtonData(0, 0);
+
     for (int i = 0; i < xSize; i++) {
       for (int j = 0; j < ySize; j++) {
         panelList.add(ButtonData(i, j, enabled: false));
@@ -47,6 +51,7 @@ class ButtonPanelState {
     backgroundColor = stateToCopy.backgroundColor;
     selectedButton = stateToCopy.selectedButton;
     margin = stateToCopy.margin;
+    nonDefinedButtonDesign = stateToCopy.nonDefinedButtonDesign;
   }
 
 
