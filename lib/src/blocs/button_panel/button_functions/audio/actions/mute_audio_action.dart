@@ -15,13 +15,13 @@ import 'package:ffi/ffi.dart';
 
 class MuteAudioAction extends ButtonAction {
   @override
-  get actionName => 'audioAction';
+  get actionName => 'muteAudioAction';
 
   // ignore: non_constant_identifier_names
   final VK_VOLUME_MUTE = 0xAD;
 
   @override
-  Widget buildSettings(BuildContext context, ButtonData parentButtonData) {
+  Widget buildSettings(ButtonPanelCubit buttonPanelCubit, ButtonData parentButtonData) {
     ffi.DynamicLibrary volumeLib = ffi.DynamicLibrary.open(Platform.script
         .resolve('build/windows/volume_library/Debug/volume.dll')
         //.resolve('data/volume_get.dll')
@@ -44,7 +44,7 @@ class MuteAudioAction extends ButtonAction {
       child: Center(
         child: TextButton(
           onPressed: () {
-            runFunction(context);
+            runFunction(buttonPanelCubit);
           },
           child: Text('Mute/Unmute   $currentVol    $muted'),
         ),
@@ -62,14 +62,14 @@ class MuteAudioAction extends ButtonAction {
   bool isVisible(BuildContext context) => true;
 
   @override
-  Future<void> runFunction(BuildContext context) async {
+  Future<void> runFunction(ButtonPanelCubit buttonPanelCubit) async {
     final kbd = calloc<INPUT>();
     kbd.ref.type = INPUT_KEYBOARD;
     kbd.ki.wVk = VK_VOLUME_MUTE;
     var result = SendInput(1, kbd, ffi.sizeOf<INPUT>());
     free(kbd);
 
-    context.read<ButtonPanelCubit>().refresh();
+    buttonPanelCubit.refresh();
 
     return Future.value();
   }

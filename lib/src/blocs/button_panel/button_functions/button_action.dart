@@ -21,11 +21,11 @@ abstract class ButtonAction {
   void setParams(Map<String, String> params);
   Map<String, String> getParams();
 
-  Future<void> runFunction(BuildContext context);
+  Future<void> runFunction(ButtonPanelCubit buttonPanelCubit);
 
   bool isVisible(BuildContext context);
 
-  Widget buildSettings(BuildContext context, ButtonData parentButtonData);
+  Widget buildSettings(ButtonPanelCubit buttonPanelCubit, ButtonData parentButtonData);
 
   OnClick toOnClick() {
     return OnClick(getParentType().function, actionName, params: getParams());

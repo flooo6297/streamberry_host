@@ -39,9 +39,9 @@ class ResizeButton extends StatelessWidget {
         show2 = false;
       }
       button1Function = () {
-        context.read<ButtonPanelCubit>().removeButtons(buttonsOnTop);
         buttonData.height++;
         buttonData.positionY--;
+        context.read<ButtonPanelCubit>().removeButtons(buttonsOnTop);
         context.read<ButtonPanelCubit>().refresh();
       };
       button2Function = () {
@@ -49,9 +49,9 @@ class ResizeButton extends StatelessWidget {
         for (int i = 0; i < buttonData.width; i++) {
           newButtons.add(ButtonData(buttonData.positionX+i, buttonData.positionY, enabled: false));
         }
-        context.read<ButtonPanelCubit>().addButtons(newButtons);
         buttonData.height--;
         buttonData.positionY++;
+        context.read<ButtonPanelCubit>().addButtons(newButtons);
         context.read<ButtonPanelCubit>().refresh();
       };
       rowOrColumn = Column(
@@ -76,8 +76,8 @@ class ResizeButton extends StatelessWidget {
         show2 = false;
       }
       button1Function = () {
-        context.read<ButtonPanelCubit>().removeButtons(buttonsOnRight);
         buttonData.width++;
+        context.read<ButtonPanelCubit>().removeButtons(buttonsOnRight);
         context.read<ButtonPanelCubit>().refresh();
       };
       button2Function = () {
@@ -85,8 +85,8 @@ class ResizeButton extends StatelessWidget {
         for (int i = 0; i < buttonData.height; i++) {
           newButtons.add(ButtonData(buttonData.positionX+buttonData.width-1, buttonData.positionY+i, enabled: false));
         }
-        context.read<ButtonPanelCubit>().addButtons(newButtons);
         buttonData.width--;
+        context.read<ButtonPanelCubit>().addButtons(newButtons);
         context.read<ButtonPanelCubit>().refresh();
       };
       rowOrColumn = Row(
@@ -111,8 +111,8 @@ class ResizeButton extends StatelessWidget {
         show2 = false;
       }
       button1Function = () {
-        context.read<ButtonPanelCubit>().removeButtons(buttonsOnBottom);
         buttonData.height++;
+        context.read<ButtonPanelCubit>().removeButtons(buttonsOnBottom);
         context.read<ButtonPanelCubit>().refresh();
       };
       button2Function = () {
@@ -120,8 +120,8 @@ class ResizeButton extends StatelessWidget {
         for (int i = 0; i < buttonData.width; i++) {
           newButtons.add(ButtonData(buttonData.positionX+i, buttonData.positionY+buttonData.height-1, enabled: false));
         }
-        context.read<ButtonPanelCubit>().addButtons(newButtons);
         buttonData.height--;
+        context.read<ButtonPanelCubit>().addButtons(newButtons);
         context.read<ButtonPanelCubit>().refresh();
       };
       rowOrColumn = Column(
@@ -146,9 +146,9 @@ class ResizeButton extends StatelessWidget {
         show2 = false;
       }
       button1Function = () {
-        context.read<ButtonPanelCubit>().removeButtons(buttonsOnLeft);
         buttonData.positionX--;
         buttonData.width++;
+        context.read<ButtonPanelCubit>().removeButtons(buttonsOnLeft);
         context.read<ButtonPanelCubit>().refresh();
       };
       button2Function = () {
@@ -156,9 +156,9 @@ class ResizeButton extends StatelessWidget {
         for (int i = 0; i < buttonData.height; i++) {
           newButtons.add(ButtonData(buttonData.positionX, buttonData.positionY+i, enabled: false));
         }
-        context.read<ButtonPanelCubit>().addButtons(newButtons);
         buttonData.positionX++;
         buttonData.width--;
+        context.read<ButtonPanelCubit>().addButtons(newButtons);
         context.read<ButtonPanelCubit>().refresh();
       };
       rowOrColumn = Row(

@@ -17,20 +17,20 @@ class CloseFolderAction extends ButtonAction {
 
   @override
   Future<void> runFunction(
-    BuildContext context,
+      ButtonPanelCubit buttonPanelCubit,
   ) async {
-    App.buttonPanelCubitOf(context).path.removeLast();
-    App.buttonPanelCubitOf(context).refresh();
+    buttonPanelCubit.path.removeLast();
+    buttonPanelCubit.refresh();
     return Future.value();
   }
 
   Future<void> runFolderFunction(
-      BuildContext context,
+      ButtonPanelCubit buttonPanelCubit,
       ButtonPanelState buttonPanelState,
       ) async {
 
-    App.buttonPanelCubitOf(context).path.removeLast();
-    App.buttonPanelCubitOf(context).refresh();
+    buttonPanelCubit.path.removeLast();
+    buttonPanelCubit.refresh();
 
     return Future.value();
   }
@@ -46,12 +46,12 @@ class CloseFolderAction extends ButtonAction {
   }
 
   @override
-  Widget buildSettings(BuildContext context, ButtonData parentButtonData) {
+  Widget buildSettings(ButtonPanelCubit buttonPanelCubit, ButtonData parentButtonData) {
     return SizedBox(
       height: 50,
       child: Center(
         child: TextButton(onPressed: () {
-          runFunction(context);
+          runFunction(buttonPanelCubit);
         },
           child: const Text('Close Folder'),),
       ),

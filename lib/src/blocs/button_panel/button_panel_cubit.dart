@@ -2,18 +2,21 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:streamberry_host/src/app.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_data.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_panel_state.dart';
+import 'package:streamberry_host/src/blocs/socket/connected_clients_cubit.dart';
 
 class ButtonPanelCubit extends Cubit<ButtonPanelState> {
 
+  final ConnectedClientsCubit connectedClientsCubit;
 
   List<int> path = [];
 
-  ButtonPanelCubit._(ButtonPanelState initialState,)
+  ButtonPanelCubit._(ButtonPanelState initialState, this.connectedClientsCubit)
       : super(initialState);
 
-  static ButtonPanelCubit init(int x, int y,
+  static ButtonPanelCubit init(int x, int y, ConnectedClientsCubit connectedClientsCubit,
       {ButtonData? parentButtonData,
       ButtonPanelCubit? parentButtonPanelCubit}) {
     ButtonPanelState initialState = ButtonPanelState(
@@ -22,10 +25,13 @@ class ButtonPanelCubit extends Cubit<ButtonPanelState> {
         const Size(100, 100),
         Colors.black87,
         const EdgeInsets.all(8.0)); //TODO: Implement loading from disk
-    return ButtonPanelCubit._(initialState,);
+    initialState.defaultPanelOptions =
+        ButtonPanelState.asDefaultPanelSettings(8, 4, const Size(100, 100),
+            Colors.black87, const EdgeInsets.all(8.0));
+    return ButtonPanelCubit._(initialState, connectedClientsCubit);
   }
 
-  ButtonPanelCubit(ButtonPanelState initialState) : super(initialState);
+  ButtonPanelCubit(ButtonPanelState initialState, this.connectedClientsCubit) : super(initialState);
 
   ButtonPanelState getState() {
     ButtonPanelState cur = state;
@@ -37,7 +43,7 @@ class ButtonPanelCubit extends Cubit<ButtonPanelState> {
 
   void selectButton(ButtonData buttonToSelect) {
     getState().selectedButton = buttonToSelect;
-    refresh();
+    //_saveAndSync();
   }
 
   ButtonData? getSelectedButton() {
@@ -81,7 +87,7 @@ class ButtonPanelCubit extends Cubit<ButtonPanelState> {
       }
     }
 
-    _saveAndSync();
+    //_saveAndSync();
     return toReturn;
   }
 
@@ -108,6 +114,7 @@ class ButtonPanelCubit extends Cubit<ButtonPanelState> {
     }
 
     removeButtons(buttonsToRemove);
+    //_saveAndSync();
 
     return true;
   }
@@ -135,13 +142,14 @@ class ButtonPanelCubit extends Cubit<ButtonPanelState> {
     }
 
     removeButtons(buttonsToRemove);
+    //_saveAndSync();
 
     return true;
   }
 
   bool addButtons(List<ButtonData> newButtons) {
     getState().panelList.addAll(newButtons);
-    _saveAndSync();
+    //_saveAndSync();
     return false;
   }
 
@@ -233,5 +241,6 @@ class ButtonPanelCubit extends Cubit<ButtonPanelState> {
 
   void _saveAndSync() {
     emit(ButtonPanelState.copy(state));
+    connectedClientsCubit.sync(state);
   }
 }

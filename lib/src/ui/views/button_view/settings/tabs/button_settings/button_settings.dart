@@ -25,7 +25,7 @@ class ButtonSettings extends StatelessWidget {
     ButtonData selectedButton = buttonPanelCubit.getSelectedButton()!;
     List<Widget> options = [];
     ButtonFunctions.getActions(selectedButton).forEach((element) {
-      options.add(element.buildSettings(context, selectedButton));
+      options.add(element.buildSettings(buttonPanelCubit, selectedButton));
     });
     return ListView(
       children: [
@@ -148,6 +148,7 @@ class ButtonSettings extends StatelessWidget {
                 ),
                 onPressed: () {
                   buttonPanelCubit.removeSelectedButton();
+                  buttonPanelCubit.refresh();
                 },
               ),
             ),

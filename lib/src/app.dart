@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ class App extends StatefulWidget {
 
   static ButtonPanelState buttonPanelStateOf(BuildContext context) => buttonPanelCubitOf(context).state;
   static ButtonPanelCubit buttonPanelCubitOf(BuildContext context) => context.findAncestorStateOfType<_AppState>()!.buttonPanelCubit;
+  static ConnectedClientsCubit connectedClientsCubitOf(BuildContext context) => context.findAncestorStateOfType<_AppState>()!._connectedClientsCubit;
 
   @override
   _AppState createState() => _AppState();
@@ -52,15 +54,13 @@ class _AppState extends State<App> {
 
   @override
   void initState() {
-    _serverSocketFuture = ServerSocket.bind(InternetAddress.loopbackIPv4, 4567)
-      ..then((serverSocket) {
-        _connectedClientsCubit = ConnectedClientsCubit();
-        serverSocket.listen((client) {
-          _connectedClientsCubit.add(client);
-        });
+    _connectedClientsCubit = ConnectedClientsCubit();
+    buttonPanelCubit = ButtonPanelCubit.init(8, 4, _connectedClientsCubit);
+    _serverSocketFuture = ServerSocket.bind(InternetAddress.loopbackIPv4, 4567)..then((serverSocket) {
+      serverSocket.listen((client) {
+        _connectedClientsCubit.add(client, buttonPanelCubit);
       });
-
-    buttonPanelCubit = ButtonPanelCubit.init(8, 4);
+    });
 
     super.initState();
   }

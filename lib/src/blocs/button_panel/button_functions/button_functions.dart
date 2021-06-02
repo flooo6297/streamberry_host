@@ -4,6 +4,7 @@ import 'package:streamberry_host/src/blocs/button_panel/button_functions/audio/a
 import 'package:streamberry_host/src/blocs/button_panel/button_functions/folder/actions/open_folder_action.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_functions/folder/folder_functions.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_functions/on_click.dart';
+import 'package:streamberry_host/src/blocs/button_panel/button_panel_cubit.dart';
 
 import 'button_action.dart';
 
@@ -21,10 +22,17 @@ abstract class ButtonFunctions{
     AudioFunctions().function: AudioFunctions(),
   };
 
-  static Future<void> runActions(ButtonData buttonData, BuildContext context) async {
+  static Future<void> runActions(ButtonData buttonData, ButtonPanelCubit buttonPanelCubit) async {
     List<ButtonAction> allActions = getActions(buttonData);
     for (var action in allActions) {
-      action.runFunction(context);
+      action.runFunction(buttonPanelCubit);
+    }
+  }
+
+  static Future<void> runActionsFromOnClicks(List<OnClick> onClicks, ButtonPanelCubit buttonPanelCubit) async {
+    List<ButtonAction> allActions = getActionsFromOnClicks(onClicks);
+    for (var action in allActions) {
+      action.runFunction(buttonPanelCubit);
     }
   }
 
@@ -33,6 +41,21 @@ abstract class ButtonFunctions{
     List<ButtonAction> toReturn = [];
 
     for (OnClick onClick in buttonData.onClicks) {
+      if (ButtonFunctions.functions.containsKey(onClick.function)) {
+        if (ButtonFunctions.functions[onClick.function]!.actions(onClick.params).containsKey(onClick.action)) {
+          toReturn.add(ButtonFunctions.functions[onClick.function]!.actions(onClick.params)[onClick.action]!);
+        }
+      }
+    }
+
+    return toReturn;
+  }
+
+  static List<ButtonAction> getActionsFromOnClicks(List<OnClick> onClicks) {
+
+    List<ButtonAction> toReturn = [];
+
+    for (OnClick onClick in onClicks) {
       if (ButtonFunctions.functions.containsKey(onClick.function)) {
         if (ButtonFunctions.functions[onClick.function]!.actions(onClick.params).containsKey(onClick.action)) {
           toReturn.add(ButtonFunctions.functions[onClick.function]!.actions(onClick.params)[onClick.action]!);

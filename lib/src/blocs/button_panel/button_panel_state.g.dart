@@ -13,7 +13,7 @@ ButtonPanelState _$ButtonPanelStateFromJson(Map<String, dynamic> json) {
     const SizeSerializer().fromJson(json['gridTilingSize'] as String),
     const ColorSerializer().fromJson(json['backgroundColor'] as int),
     const EdgeInsetsSerializer()
-        .fromJson(json['margin'] as Map<String, double>),
+        .fromJson(json['margin'] as Map<String, dynamic>),
   )
     ..panelList = (json['panelList'] as List<dynamic>)
         .map((e) => ButtonData.fromJson(e as Map<String, dynamic>))

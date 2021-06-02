@@ -41,6 +41,7 @@ class DefinedButton extends StatelessWidget {
               child: IconButton(
                 onPressed: () {
                   context.read<ButtonPanelCubit>().selectButton(buttonData);
+                  context.read<ButtonPanelCubit>().refresh();
                 },
                 icon: const Icon(Icons.margin),
               ),

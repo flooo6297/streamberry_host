@@ -17,27 +17,20 @@ class OpenFolderAction extends ButtonAction {
 
   @override
   Future<void> runFunction(
-    BuildContext context,
+      ButtonPanelCubit buttonPanelCubit,
   ) async {
-    buttonPanelCubit = ButtonPanelCubit.init(8, 4);
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                ButtonView(buttonPanelCubit: buttonPanelCubit)));
-
     return Future.value();
   }
 
   Future<void> runFolderFunction(
-    BuildContext context,
+      ButtonPanelCubit buttonPanelCubit,
     ButtonData parentButtonData,
   ) async {
-    App.buttonPanelCubitOf(context).path.add(App.buttonPanelCubitOf(context)
+    buttonPanelCubit.path.add(buttonPanelCubit
         .getState()
         .panelList
         .indexWhere((element) => element.equals(parentButtonData)));
-    App.buttonPanelCubitOf(context).refresh();
+    buttonPanelCubit.refresh();
 
     return Future.value();
   }
@@ -55,14 +48,14 @@ class OpenFolderAction extends ButtonAction {
   void setParams(Map<String, String> params) {}
 
   @override
-  Widget buildSettings(BuildContext context, ButtonData parentButtonData) {
+  Widget buildSettings(ButtonPanelCubit buttonPanelCubit, ButtonData parentButtonData) {
     return SizedBox(
       height: 50,
       child: Center(
         child: TextButton(
           onPressed: () {
             if (parentButtonData.childState != null) {
-              runFolderFunction(context, parentButtonData);
+              runFolderFunction(buttonPanelCubit, parentButtonData);
             }
           },
           child: const Text('Open Folder'),

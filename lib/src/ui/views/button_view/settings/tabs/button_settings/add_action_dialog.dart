@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:streamberry_host/src/app.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_functions/button_functions.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_functions/folder/actions/open_folder_action.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_panel_cubit.dart';
@@ -48,20 +49,25 @@ class _AddActionDialogState extends State<AddActionDialog> {
                     Text(action.title),
                     TextButton(
                         onPressed: () {
-                          widget.buttonPanelCubit.getSelectedButton()!.onClicks
+                          widget.buttonPanelCubit
+                              .getSelectedButton()!
+                              .onClicks
                               .add(action.toOnClick());
 
                           if (action.actionName ==
                               OpenFolderAction().actionName) {
-                            widget.buttonPanelCubit.getSelectedButton()!
-                                .childState = ButtonPanelCubit.init(
-                                    widget.buttonPanelCubit.state.xSize,
-                                    widget.buttonPanelCubit.state.ySize,
-                                    parentButtonData: widget
-                                        .buttonPanelCubit.getSelectedButton()!,
-                                    parentButtonPanelCubit:
-                                        widget.buttonPanelCubit)
-                                .state;
+                            widget.buttonPanelCubit.getSelectedButton()!.childState =
+                                ButtonPanelState(
+                                    App.buttonPanelStateOf(context)
+                                        .defaultPanelOptions!.xSize,
+                                    App.buttonPanelStateOf(context)
+                                        .defaultPanelOptions!.ySize,
+                                    App.buttonPanelStateOf(context)
+                                        .defaultPanelOptions!.gridTilingSize,
+                                    App.buttonPanelStateOf(context)
+                                        .defaultPanelOptions!.backgroundColor,
+                                    App.buttonPanelStateOf(context)
+                                        .defaultPanelOptions!.margin);
                           }
 
                           widget.buttonPanelCubit.refresh();

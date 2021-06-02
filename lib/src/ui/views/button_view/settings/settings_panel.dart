@@ -59,42 +59,6 @@ class _SettingsPanelState extends State<SettingsPanel> {
           ),
         ),
       ),
-
-      /*child: Column(
-        children: [
-          Text(widget.panelState.selectedButton != null
-              ? '${widget.panelState.selectedButton!.positionX} - ${widget.panelState.selectedButton!.positionY}'
-              : 'sadfsdf'),
-          TextButton(
-            onPressed: () async {
-              //var test = jsonEncode(App.buttonPanelStateOf(context).toJson());
-              var test = App.buttonPanelStateOf(context).toJson();
-              var test1 = 0;
-            },
-            child: const Text('json_test'),
-          ),
-          ..._buildButtonOptions(context, widget.panelState),
-        ],
-      ),*/
     );
-  }
-
-  List<Widget> _buildButtonOptions(
-      BuildContext context, ButtonPanelState panelState) {
-    if (panelState.selectedButton != null &&
-        panelState.selectedButton!.onClicks.isNotEmpty) {
-      return [
-        TextButton(
-          onPressed: () async {
-            await ButtonFunctions.runActions(
-                panelState.selectedButton!, context);
-            //var test = jsonEncode(panelState.toJson());
-            //var test1 = 0;
-          },
-          child: const Text('run Action'),
-        ),
-      ];
-    }
-    return [Container()];
   }
 }

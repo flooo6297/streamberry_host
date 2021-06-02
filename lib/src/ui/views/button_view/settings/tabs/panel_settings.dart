@@ -62,6 +62,8 @@ class _PanelSettingsState extends State<PanelSettings> {
       if (!widget.buttonPanelCubit.setNewGridSize(x, y)) {
         numOfCols.text = widget.buttonPanelCubit.getState().xSize.toString();
         numOfRows.text = widget.buttonPanelCubit.getState().ySize.toString();
+      } else {
+        widget.buttonPanelCubit.refresh();
       }
     }
   }

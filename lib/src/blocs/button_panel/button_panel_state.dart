@@ -9,11 +9,14 @@ part 'button_panel_state.g.dart';
 
 @JsonSerializable()
 class ButtonPanelState {
-  late final List<ButtonData> panelList;
+  late List<ButtonData> panelList;
 
 
   @JsonKey(ignore: true)
   ButtonData? selectedButton;
+
+  @JsonKey(ignore: true)
+  ButtonPanelState? defaultPanelOptions;
 
   late ButtonData nonDefinedButtonDesign;
 
@@ -43,6 +46,9 @@ class ButtonPanelState {
     }
   }
 
+  ButtonPanelState.asDefaultPanelSettings(this.xSize, this.ySize,
+      this.gridTilingSize, this.backgroundColor, this.margin);
+
   ButtonPanelState.copy(ButtonPanelState stateToCopy) {
     gridTilingSize = stateToCopy.gridTilingSize;
     xSize = stateToCopy.xSize;
@@ -52,6 +58,7 @@ class ButtonPanelState {
     selectedButton = stateToCopy.selectedButton;
     margin = stateToCopy.margin;
     nonDefinedButtonDesign = stateToCopy.nonDefinedButtonDesign;
+    defaultPanelOptions = stateToCopy.defaultPanelOptions;
   }
 
 

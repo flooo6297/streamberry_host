@@ -57,6 +57,7 @@ class UndefinedButton extends StatelessWidget {
                 onPressed: () {
                   buttonData.enabled = true;
                   context.read<ButtonPanelCubit>().selectButton(buttonData);
+                  context.read<ButtonPanelCubit>().refresh();
                 },
               ),
             ),
