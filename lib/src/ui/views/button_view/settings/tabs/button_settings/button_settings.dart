@@ -1,8 +1,20 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:filepicker_windows/filepicker_windows.dart';
 import 'package:flutter/material.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_data.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_functions/button_functions.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_panel_cubit.dart';
 import 'package:streamberry_host/src/ui/views/button_view/settings/tabs/button_settings/add_action_dialog.dart';
+
+import 'package:hive/hive.dart';
+
+import 'dart:io' show File;
+
+import 'package:uuid/uuid.dart';
+
+
 
 class ButtonSettings extends StatelessWidget {
   final ButtonPanelCubit buttonPanelCubit;
@@ -25,7 +37,10 @@ class ButtonSettings extends StatelessWidget {
     ButtonData selectedButton = buttonPanelCubit.getSelectedButton()!;
     List<Widget> options = [];
     ButtonFunctions.getActions(selectedButton).forEach((element) {
-      options.add(element.buildSettings(buttonPanelCubit, selectedButton));
+      options.add(element.buildSettings(buttonPanelCubit, selectedButton, (newAction) {
+        selectedButton.onClicks[selectedButton.onClicks.indexWhere((onClick) => onClick.equals(element.toOnClick()))] = newAction.toOnClick();
+        buttonPanelCubit.refresh();
+      }));
     });
     return ListView(
       children: [
@@ -61,7 +76,8 @@ class ButtonSettings extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.only(right: 40.0),
                               child: ConstrainedBox(
-                                constraints: const BoxConstraints(minHeight: 72),
+                                constraints:
+                                    const BoxConstraints(minHeight: 72),
                                 child: options[index],
                               ),
                             ),
@@ -75,7 +91,7 @@ class ButtonSettings extends StatelessWidget {
                             child: Align(
                               alignment: AlignmentDirectional.topEnd,
                               child: Visibility(
-                                visible: options.length>1,
+                                visible: options.length > 1,
                                 child: ReorderableDragStartListener(
                                   index: index,
                                   child: const Padding(
@@ -131,6 +147,37 @@ class ButtonSettings extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextButton(
+                child: const Text('Pick Icon'),
+                onPressed: () async {
+                  OpenFilePicker picker = OpenFilePicker();
+                  picker.fileMustExist = true;
+                  picker.filterSpecification = {'Image Files (*.jpg; *.gif; *.png)': '*.jpg;*.gif;*.png'};
+                  picker.title = 'Pick an Image';
+                  File? file = picker.getFile();
+                  if (file != null) {
+                    print(file.path);
+                    Uint8List imageBytes = await file.readAsBytes();
+                    Box<String> images = Hive.box('images');
+                    String currentImage = selectedButton.image;
+                    if (currentImage.isNotEmpty && images.containsKey(currentImage)) {
+                      images.delete(currentImage);
+                    }
+                    String newImage = const Uuid().v1();
+                    images.put(newImage, base64Encode(imageBytes));
+                    selectedButton.image = newImage;
+                    buttonPanelCubit.refresh();
+                  }
+                },
               ),
             ),
           ),

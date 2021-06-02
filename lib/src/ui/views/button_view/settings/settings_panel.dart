@@ -44,7 +44,7 @@ class _SettingsPanelState extends State<SettingsPanel> {
 
                 tabs: [
                   Tab(text: 'Button Settings',),
-                  Tab(text: 'Panel Settings',),
+                  Tab(text: 'Folder Settings',),
                   Tab(text: 'Global Settings',),
                 ],
               ),

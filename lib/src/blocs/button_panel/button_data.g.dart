@@ -20,6 +20,7 @@ ButtonData _$ButtonDataFromJson(Map<String, dynamic> json) {
     childState: json['childState'] == null
         ? null
         : ButtonPanelState.fromJson(json['childState'] as Map<String, dynamic>),
+    image: json['image'] as String,
   );
 }
 
@@ -33,4 +34,5 @@ Map<String, dynamic> _$ButtonDataToJson(ButtonData instance) =>
       'onClicks': instance.onClicks,
       'enabled': instance.enabled,
       'childState': instance.childState,
+      'image': instance.image,
     };

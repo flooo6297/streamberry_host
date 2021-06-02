@@ -56,18 +56,28 @@ class _AddActionDialogState extends State<AddActionDialog> {
 
                           if (action.actionName ==
                               OpenFolderAction().actionName) {
-                            widget.buttonPanelCubit.getSelectedButton()!.childState =
+                            widget.buttonPanelCubit
+                                    .getSelectedButton()!
+                                    .childState =
                                 ButtonPanelState(
                                     App.buttonPanelStateOf(context)
-                                        .defaultPanelOptions!.xSize,
+                                        .defaultPanelOptions!
+                                        .xSize,
                                     App.buttonPanelStateOf(context)
-                                        .defaultPanelOptions!.ySize,
+                                        .defaultPanelOptions!
+                                        .ySize,
                                     App.buttonPanelStateOf(context)
-                                        .defaultPanelOptions!.gridTilingSize,
+                                        .defaultPanelOptions!
+                                        .gridTilingSize,
                                     App.buttonPanelStateOf(context)
-                                        .defaultPanelOptions!.backgroundColor,
+                                        .defaultPanelOptions!
+                                        .backgroundColor,
                                     App.buttonPanelStateOf(context)
-                                        .defaultPanelOptions!.margin);
+                                        .defaultPanelOptions!
+                                        .margin,
+                                    App.buttonPanelStateOf(context)
+                                        .defaultPanelOptions!
+                                        .name);
                           }
 
                           widget.buttonPanelCubit.refresh();

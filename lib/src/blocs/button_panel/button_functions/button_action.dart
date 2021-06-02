@@ -25,7 +25,7 @@ abstract class ButtonAction {
 
   bool isVisible(BuildContext context);
 
-  Widget buildSettings(ButtonPanelCubit buttonPanelCubit, ButtonData parentButtonData);
+  Widget buildSettings(ButtonPanelCubit buttonPanelCubit, ButtonData parentButtonData, Function(ButtonAction newAction) madeChanges);
 
   OnClick toOnClick() {
     return OnClick(getParentType().function, actionName, params: getParams());

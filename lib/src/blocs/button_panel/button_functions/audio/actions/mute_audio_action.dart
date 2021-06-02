@@ -9,7 +9,6 @@ import 'package:streamberry_host/src/blocs/button_panel/button_panel_cubit.dart'
 import 'package:win32/win32.dart';
 import 'dart:ffi' as ffi;
 import 'dart:io' show Platform;
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:ffi/ffi.dart';
 
@@ -21,7 +20,8 @@ class MuteAudioAction extends ButtonAction {
   final VK_VOLUME_MUTE = 0xAD;
 
   @override
-  Widget buildSettings(ButtonPanelCubit buttonPanelCubit, ButtonData parentButtonData) {
+  Widget buildSettings(ButtonPanelCubit buttonPanelCubit,
+      ButtonData parentButtonData, Function(ButtonAction newAction) madeChanges) {
     ffi.DynamicLibrary volumeLib = ffi.DynamicLibrary.open(Platform.script
         .resolve('build/windows/volume_library/Debug/volume.dll')
         //.resolve('data/volume_get.dll')
@@ -35,7 +35,7 @@ class MuteAudioAction extends ButtonAction {
         .lookup<ffi.NativeFunction<ffi.Uint8 Function()>>("mute_get")
         .asFunction();
 
-    bool muted = getMute()!=0;
+    bool muted = getMute() != 0;
 
     int currentVol = getVolume();
 

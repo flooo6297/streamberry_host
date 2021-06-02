@@ -17,13 +17,13 @@ class OpenFolderAction extends ButtonAction {
 
   @override
   Future<void> runFunction(
-      ButtonPanelCubit buttonPanelCubit,
+    ButtonPanelCubit buttonPanelCubit,
   ) async {
     return Future.value();
   }
 
   Future<void> runFolderFunction(
-      ButtonPanelCubit buttonPanelCubit,
+    ButtonPanelCubit buttonPanelCubit,
     ButtonData parentButtonData,
   ) async {
     buttonPanelCubit.path.add(buttonPanelCubit
@@ -45,10 +45,13 @@ class OpenFolderAction extends ButtonAction {
   bool isVisible(BuildContext context) => true;
 
   @override
-  void setParams(Map<String, String> params) {}
+  void setParams(Map<String, String> params) {  }
 
   @override
-  Widget buildSettings(ButtonPanelCubit buttonPanelCubit, ButtonData parentButtonData) {
+  Widget buildSettings(
+      ButtonPanelCubit buttonPanelCubit,
+      ButtonData parentButtonData,
+      Function(ButtonAction newAction) madeChanges) {
     return SizedBox(
       height: 50,
       child: Center(
@@ -58,7 +61,7 @@ class OpenFolderAction extends ButtonAction {
               runFolderFunction(buttonPanelCubit, parentButtonData);
             }
           },
-          child: const Text('Open Folder'),
+          child: const Text('Open Folder', softWrap: false, overflow: TextOverflow.fade,),
         ),
       ),
     );

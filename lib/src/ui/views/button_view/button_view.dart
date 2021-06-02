@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:split_view/split_view.dart';
 import 'package:streamberry_host/src/app.dart';
 import 'package:streamberry_host/src/ui/custom_elements/split.dart';
 import 'package:streamberry_host/src/ui/views/button_view/button/button.dart';
@@ -48,39 +49,58 @@ class _ButtonViewState extends State<ButtonView> {
                 height: double.infinity,
                 width: double.infinity,
                 alignment: Alignment.center,
-                child: Split(
-                  axis: Axis.horizontal,
-                  firstChild: Container(
-                    alignment: Alignment.center,
-                    child: SizedBox(
-                      height:
-                          panelState.ySize * panelState.gridTilingSize.height,
-                      width: panelState.xSize * panelState.gridTilingSize.width,
-                      child: Stack(
-                        children: [
-                          panelState.selectedButton!=null?Positioned(
-                            top: panelState.gridTilingSize.height * panelState.selectedButton!.positionY,
-                            left: panelState.gridTilingSize.width * panelState.selectedButton!.positionX,
-                            height: panelState.gridTilingSize.height * panelState.selectedButton!.height,
-                            width: panelState.gridTilingSize.width * panelState.selectedButton!.width,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.transparent,
-                                border: Border.all(color: Colors.greenAccent, width: 3.0),
-                              ),
+
+                child: SplitView(
+                  gripSize: 6,
+                  gripColor: Theme.of(context).primaryColor,
+                  controller: SplitViewController(weights: [1-(350/MediaQuery.of(context).size.width)],limits: [WeightLimit(min: 1/10), WeightLimit(min: 350/MediaQuery.of(context).size.width)]),
+                  viewMode: SplitViewMode.Horizontal,
+                  children: [
+                    Stack(
+                      children: [
+                        Positioned(top: 8,
+                          left: 8,
+                          child: Text(widget.buttonPanelCubit.getPathString()),),
+                        Container(
+                          alignment: Alignment.center,
+                          child: SizedBox(
+                            height:
+                            panelState.ySize * panelState.gridTilingSize.height,
+                            width: panelState.xSize * panelState.gridTilingSize.width,
+                            child: Stack(
+                              children: [
+                                panelState.selectedButton != null
+                                    ? Positioned(
+                                  top: panelState.gridTilingSize.height *
+                                      panelState.selectedButton!.positionY,
+                                  left: panelState.gridTilingSize.width *
+                                      panelState.selectedButton!.positionX,
+                                  height: panelState.gridTilingSize.height *
+                                      panelState.selectedButton!.height,
+                                  width: panelState.gridTilingSize.width *
+                                      panelState.selectedButton!.width,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.transparent,
+                                      border: Border.all(
+                                          color: Colors.greenAccent,
+                                          width: 3.0),
+                                    ),
+                                  ),
+                                )
+                                    : Container(),
+                                ...(panelState.panelList
+                                    .map((buttonData) =>
+                                    Button(buttonData, panelState))
+                                    .toList()),
+                              ],
                             ),
-                          ):Container(),
-                          ...(panelState.panelList
-                              .map((buttonData) =>
-                                  Button(buttonData, panelState))
-                              .toList()),
-                        ],
-                      ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  secondChild: SettingsPanel(panelState),
-                  initialFirstFraction: 2 / 3,
-                  mode: SplitMode.leftExpand,
+                    SettingsPanel(panelState),
+                  ],
                 ),
               );
             },

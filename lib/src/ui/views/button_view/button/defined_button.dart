@@ -1,11 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:streamberry_host/src/app.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_data.dart';
-import 'package:streamberry_host/src/blocs/button_panel/button_functions/on_click.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_panel_cubit.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_panel_state.dart';
 import 'package:streamberry_host/src/ui/custom_elements/resize_button.dart';
+import 'package:hive/hive.dart';
 
 class DefinedButton extends StatelessWidget {
   final ButtonData buttonData;
@@ -38,12 +39,20 @@ class DefinedButton extends StatelessWidget {
                 color: buttonData.color,
                 border: Border.all(color: buttonData.color, width: 3.0),
               ),
-              child: IconButton(
-                onPressed: () {
+              child: InkWell(
+                onTap: () {
                   context.read<ButtonPanelCubit>().selectButton(buttonData);
                   context.read<ButtonPanelCubit>().refresh();
                 },
-                icon: const Icon(Icons.margin),
+                child: Builder(
+                  builder: (context) {
+                    Box<String> images = Hive.box('images');
+                    if (images.containsKey(buttonData.image)) {
+                      return Image.memory(base64Decode(images.get(buttonData.image)!));
+                    }
+                    return Container();
+                  },
+                ),
               ),
             ),
           ),

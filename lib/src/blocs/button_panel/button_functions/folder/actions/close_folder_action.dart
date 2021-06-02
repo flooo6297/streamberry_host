@@ -17,7 +17,7 @@ class CloseFolderAction extends ButtonAction {
 
   @override
   Future<void> runFunction(
-      ButtonPanelCubit buttonPanelCubit,
+    ButtonPanelCubit buttonPanelCubit,
   ) async {
     buttonPanelCubit.path.removeLast();
     buttonPanelCubit.refresh();
@@ -25,10 +25,9 @@ class CloseFolderAction extends ButtonAction {
   }
 
   Future<void> runFolderFunction(
-      ButtonPanelCubit buttonPanelCubit,
-      ButtonPanelState buttonPanelState,
-      ) async {
-
+    ButtonPanelCubit buttonPanelCubit,
+    ButtonPanelState buttonPanelState,
+  ) async {
     buttonPanelCubit.path.removeLast();
     buttonPanelCubit.refresh();
 
@@ -42,18 +41,20 @@ class CloseFolderAction extends ButtonAction {
   get tooltip => '';
 
   @override
-  void setParams(Map<String, String> params) {
-  }
+  void setParams(Map<String, String> params) {}
 
   @override
-  Widget buildSettings(ButtonPanelCubit buttonPanelCubit, ButtonData parentButtonData) {
+  Widget buildSettings(ButtonPanelCubit buttonPanelCubit,
+      ButtonData parentButtonData, Function(ButtonAction newAction) madeChanges) {
     return SizedBox(
       height: 50,
       child: Center(
-        child: TextButton(onPressed: () {
-          runFunction(buttonPanelCubit);
-        },
-          child: const Text('Close Folder'),),
+        child: TextButton(
+          onPressed: () {
+            runFunction(buttonPanelCubit);
+          },
+          child: const Text('Close Folder'),
+        ),
       ),
     );
   }

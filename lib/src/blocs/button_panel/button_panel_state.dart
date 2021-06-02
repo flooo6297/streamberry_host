@@ -11,6 +11,7 @@ part 'button_panel_state.g.dart';
 class ButtonPanelState {
   late List<ButtonData> panelList;
 
+  String name = 'Folder';
 
   @JsonKey(ignore: true)
   ButtonData? selectedButton;
@@ -34,7 +35,7 @@ class ButtonPanelState {
 
   ButtonPanelState(
       this.xSize, this.ySize, this.gridTilingSize, this.backgroundColor,
-  this.margin) {
+  this.margin, this.name) {
     panelList = [];
 
     nonDefinedButtonDesign = ButtonData(0, 0);
@@ -47,7 +48,7 @@ class ButtonPanelState {
   }
 
   ButtonPanelState.asDefaultPanelSettings(this.xSize, this.ySize,
-      this.gridTilingSize, this.backgroundColor, this.margin);
+      this.gridTilingSize, this.backgroundColor, this.margin, this.name);
 
   ButtonPanelState.copy(ButtonPanelState stateToCopy) {
     gridTilingSize = stateToCopy.gridTilingSize;
@@ -59,6 +60,7 @@ class ButtonPanelState {
     margin = stateToCopy.margin;
     nonDefinedButtonDesign = stateToCopy.nonDefinedButtonDesign;
     defaultPanelOptions = stateToCopy.defaultPanelOptions;
+    name = stateToCopy.name;
   }
 
 

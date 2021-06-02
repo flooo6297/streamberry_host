@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_data.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_panel_cubit.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_panel_state.dart';
-import 'package:streamberry_host/src/ui/custom_elements/resize_button.dart';
 import 'package:streamberry_host/src/ui/views/button_view/button/defined_button.dart';
 import 'package:streamberry_host/src/ui/views/button_view/button/undefined_button.dart';
 
