@@ -1,62 +1,54 @@
+import 'dart:convert';
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:streamberry_host/src/blocs/button_panel/button_functions/on_click.dart';
+import 'package:streamberry_host/src/blocs/button_panel/button_type.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_panel_state.dart';
-import 'package:streamberry_host/src/json_converters/color_serializer.dart';
+import 'package:streamberry_host/src/blocs/button_panel/default_button/default_button.dart';
+import 'package:uuid/uuid.dart';
 
 part 'button_data.g.dart';
 
 @JsonSerializable()
 class ButtonData {
-  @ColorSerializer()
-  late Color color;
+  late String id;
+  late bool enabled;
+  late double borderWidth;
+
+  @JsonKey(defaultValue: null)
+  ButtonPanelState? childState;
 
   late int height;
   late int width;
   late int positionX;
   late int positionY;
 
-  List<OnClick> onClicks = [];
-  late bool enabled;
+  @JsonKey(includeIfNull: false)
+  DefaultButton? defaultButton;
 
-  @JsonKey(defaultValue: null)
-  ButtonPanelState? childState;
-
-  String image = '';
-
-  get canBeOverwritten => (!enabled && onClicks.isEmpty);
+  get canBeOverwritten => (!enabled && ((defaultButton==null)?true:defaultButton!.canBeOverwritten));
 
   void delete() {
     enabled = false;
-    onClicks.clear();
+    if (defaultButton != null) {
+      defaultButton!.delete();
+    }
   }
 
   ButtonData(
     this.positionX,
     this.positionY, {
-    this.color = Colors.white24,
     this.height = 1,
     this.width = 1,
-    List<OnClick> onClicks = const [],
-    this.enabled = true,
     this.childState,
-    this.image = '',
+    this.enabled = true,
+    this.borderWidth = 3.0,
+    DefaultButton? defaultButton,
+    String? id,
   })  : assert(height > 0),
         assert(width > 0) {
-    this.onClicks.addAll(onClicks);
-  }
-
-  ButtonData.copy(ButtonData buttonData) {
-    positionY = buttonData.positionY;
-    positionX = buttonData.positionX;
-    color = buttonData.color;
-    height = buttonData.height;
-    width = buttonData.width;
-    onClicks.addAll(buttonData.onClicks);
-    enabled = buttonData.enabled;
-    image = buttonData.image;
+    this.id = id ?? const Uuid().v1();
+    this.defaultButton = defaultButton??DefaultButton();
   }
 
   bool overlaps(ButtonData button) {
@@ -77,30 +69,17 @@ class ButtonData {
     return true;
   }
 
-  bool equals(ButtonData buttonData) {
-    bool actionListsAreSame = true;
-    if (onClicks.length != buttonData.onClicks.length) {
-      actionListsAreSame = false;
-    } else {
-      for (int i = 0; i < onClicks.length; i++) {
-        if (!onClicks[i].equals(buttonData.onClicks[i])) {
-          actionListsAreSame = false;
-        }
-      }
-    }
-
-    return positionY == buttonData.positionY &&
-        positionX == buttonData.positionX &&
-        color == buttonData.color &&
-        height == buttonData.height &&
-        width == buttonData.width &&
-        actionListsAreSame &&
-        enabled == buttonData.enabled &&
-        image == buttonData.image;
+  bool operator ==(other) {
+    return jsonEncode(this.toJson()) ==
+        jsonEncode((other as ButtonData).toJson());
   }
 
   factory ButtonData.fromJson(Map<String, dynamic> json) =>
       _$ButtonDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$ButtonDataToJson(this);
+
+  ButtonData copy() {
+    return ButtonData.fromJson(jsonDecode(jsonEncode(toJson())));
+  }
 }

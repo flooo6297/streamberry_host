@@ -15,6 +15,7 @@ ButtonPanelState _$ButtonPanelStateFromJson(Map<String, dynamic> json) {
     const EdgeInsetsSerializer()
         .fromJson(json['margin'] as Map<String, dynamic>),
     json['name'] as String,
+    (json['borderRadius'] as num).toDouble(),
   )
     ..panelList = (json['panelList'] as List<dynamic>)
         .map((e) => ButtonData.fromJson(e as Map<String, dynamic>))
@@ -32,6 +33,7 @@ Map<String, dynamic> _$ButtonPanelStateToJson(ButtonPanelState instance) =>
       'backgroundColor':
           const ColorSerializer().toJson(instance.backgroundColor),
       'margin': const EdgeInsetsSerializer().toJson(instance.margin),
+      'borderRadius': instance.borderRadius,
       'xSize': instance.xSize,
       'ySize': instance.ySize,
     };

@@ -1,6 +1,6 @@
 
 
-import 'dart:io' show Platform, Directory;
+import 'dart:io' show Directory;
 import 'package:path/path.dart' as path;
 
 
@@ -8,7 +8,6 @@ import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:streamberry_host/src/app.dart';
 
 void main() async {
@@ -18,5 +17,7 @@ void main() async {
 
   Hive.init(hiveDirectory);
   await Hive.openBox<String>('images');
+  await Hive.openBox<String>('saveData');
+
   runApp(const App());
 }

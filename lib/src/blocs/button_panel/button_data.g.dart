@@ -10,29 +10,38 @@ ButtonData _$ButtonDataFromJson(Map<String, dynamic> json) {
   return ButtonData(
     json['positionX'] as int,
     json['positionY'] as int,
-    color: const ColorSerializer().fromJson(json['color'] as int),
     height: json['height'] as int,
     width: json['width'] as int,
-    onClicks: (json['onClicks'] as List<dynamic>)
-        .map((e) => OnClick.fromJson(e as Map<String, dynamic>))
-        .toList(),
-    enabled: json['enabled'] as bool,
     childState: json['childState'] == null
         ? null
         : ButtonPanelState.fromJson(json['childState'] as Map<String, dynamic>),
-    image: json['image'] as String,
+    enabled: json['enabled'] as bool,
+    borderWidth: (json['borderWidth'] as num).toDouble(),
+    defaultButton: json['defaultButton'] == null
+        ? null
+        : DefaultButton.fromJson(json['defaultButton'] as Map<String, dynamic>),
+    id: json['id'] as String?,
   );
 }
 
-Map<String, dynamic> _$ButtonDataToJson(ButtonData instance) =>
-    <String, dynamic>{
-      'color': const ColorSerializer().toJson(instance.color),
-      'height': instance.height,
-      'width': instance.width,
-      'positionX': instance.positionX,
-      'positionY': instance.positionY,
-      'onClicks': instance.onClicks,
-      'enabled': instance.enabled,
-      'childState': instance.childState,
-      'image': instance.image,
-    };
+Map<String, dynamic> _$ButtonDataToJson(ButtonData instance) {
+  final val = <String, dynamic>{
+    'id': instance.id,
+    'enabled': instance.enabled,
+    'borderWidth': instance.borderWidth,
+    'childState': instance.childState,
+    'height': instance.height,
+    'width': instance.width,
+    'positionX': instance.positionX,
+    'positionY': instance.positionY,
+  };
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('defaultButton', instance.defaultButton);
+  return val;
+}

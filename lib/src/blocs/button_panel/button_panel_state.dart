@@ -30,12 +30,13 @@ class ButtonPanelState {
   @EdgeInsetsSerializer()
   late EdgeInsets margin;
 
+  late double borderRadius;
+
   late int xSize;
   late int ySize;
 
-  ButtonPanelState(
-      this.xSize, this.ySize, this.gridTilingSize, this.backgroundColor,
-  this.margin, this.name) {
+  ButtonPanelState(this.xSize, this.ySize, this.gridTilingSize,
+      this.backgroundColor, this.margin, this.name, this.borderRadius) {
     panelList = [];
 
     nonDefinedButtonDesign = ButtonData(0, 0);
@@ -47,26 +48,58 @@ class ButtonPanelState {
     }
   }
 
-  ButtonPanelState.asDefaultPanelSettings(this.xSize, this.ySize,
-      this.gridTilingSize, this.backgroundColor, this.margin, this.name);
+  ButtonPanelState.asDefaultPanelSettings(
+      this.xSize,
+      this.ySize,
+      this.gridTilingSize,
+      this.backgroundColor,
+      this.margin,
+      this.name,
+      this.borderRadius,
+      this.nonDefinedButtonDesign) {
+    panelList = [];
+  }
 
-  ButtonPanelState.copy(ButtonPanelState stateToCopy) {
+  ButtonPanelState.copy(ButtonPanelState stateToCopy,
+      {bool ignoreDefaultPanelOptions = false}) {
     gridTilingSize = stateToCopy.gridTilingSize;
     xSize = stateToCopy.xSize;
     ySize = stateToCopy.ySize;
-    panelList = List<ButtonData>.of(stateToCopy.panelList);
+    panelList = [];
+    if (stateToCopy.panelList.isNotEmpty) {
+      panelList.removeRange(0, panelList.length);
+      panelList.addAll(List<ButtonData>.of(stateToCopy.panelList));
+    } else {
+      for (int i = 0; i < xSize; i++) {
+        for (int j = 0; j < ySize; j++) {
+          panelList.add(ButtonData(i, j, enabled: false));
+        }
+      }
+    }
     backgroundColor = stateToCopy.backgroundColor;
     selectedButton = stateToCopy.selectedButton;
     margin = stateToCopy.margin;
     nonDefinedButtonDesign = stateToCopy.nonDefinedButtonDesign;
-    defaultPanelOptions = stateToCopy.defaultPanelOptions;
+    if (!ignoreDefaultPanelOptions) {
+      defaultPanelOptions = stateToCopy.defaultPanelOptions;
+    } else {
+      defaultPanelOptions = null;
+    }
     name = stateToCopy.name;
+    borderRadius = stateToCopy.borderRadius;
   }
 
+  ButtonData? getButtonDataById(String id) {
+    Iterable<ButtonData> buttons =
+        panelList.where((element) => element.id == id);
+    if (buttons.isEmpty) {
+      return null;
+    }
+    return buttons.first;
+  }
 
-
-
-  factory ButtonPanelState.fromJson(Map<String, dynamic> json) => _$ButtonPanelStateFromJson(json);
+  factory ButtonPanelState.fromJson(Map<String, dynamic> json) =>
+      _$ButtonPanelStateFromJson(json);
 
   Map<String, dynamic> toJson() => _$ButtonPanelStateToJson(this);
 }

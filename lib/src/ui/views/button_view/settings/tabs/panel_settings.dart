@@ -31,176 +31,214 @@ class _PanelSettingsState extends State<PanelSettings> {
             )),
           ),
         ),
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 35,
-              child: TextButton(
-                onPressed: () {
-                  widget.buttonPanelCubit.setNewGridSize(
-                      widget.buttonPanelCubit.getState().xSize - 1,
-                      widget.buttonPanelCubit.getState().ySize);
-                  widget.buttonPanelCubit.refresh();
-                },
-                child: Text(
-                  '-',
-                  softWrap: false,
-                  overflow: TextOverflow.fade,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1!
-                      .copyWith(fontSize: 30),
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 120,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    widget.buttonPanelCubit.getState().xSize.toString(),
-                    softWrap: false,
-                    overflow: TextOverflow.fade,
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                        color: Theme.of(context).colorScheme.secondary,
-                        fontSize: 20),
-                  ),
-                  Text(
-                    ' ${widget.buttonPanelCubit.getState().xSize > 1 ? 'Columns' : 'Column'}',
-                    softWrap: false,
-                    overflow: TextOverflow.fade,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText1!
-                        .copyWith(fontSize: 20),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              width: 35,
-              child: TextButton(
-                onPressed: () {
-                  widget.buttonPanelCubit.setNewGridSize(
-                      widget.buttonPanelCubit.getState().xSize + 1,
-                      widget.buttonPanelCubit.getState().ySize);
-                  widget.buttonPanelCubit.refresh();
-                },
-                child: Text(
-                  '+',
-                  softWrap: false,
-                  overflow: TextOverflow.fade,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1!
-                      .copyWith(fontSize: 26),
-                ),
-              ),
-            ),
-          ],
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 35,
-              child: TextButton(
-                onPressed: () {
-                  widget.buttonPanelCubit.setNewGridSize(
-                      widget.buttonPanelCubit.getState().xSize,
-                      widget.buttonPanelCubit.getState().ySize - 1);
-                  widget.buttonPanelCubit.refresh();
-                },
-                child: Text(
-                  '-',
-                  softWrap: false,
-                  overflow: TextOverflow.fade,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1!
-                      .copyWith(fontSize: 30),
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 120,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    widget.buttonPanelCubit.getState().ySize.toString(),
-                    softWrap: false,
-                    overflow: TextOverflow.fade,
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                        color: Theme.of(context).colorScheme.secondary,
-                        fontSize: 20),
-                  ),
-                  Text(
-                    ' ${widget.buttonPanelCubit.getState().ySize > 1 ? 'Rows' : 'Row'}',
-                    softWrap: false,
-                    overflow: TextOverflow.fade,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText1!
-                        .copyWith(fontSize: 20),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              width: 35,
-              child: TextButton(
-                onPressed: () {
-                  widget.buttonPanelCubit.setNewGridSize(
-                      widget.buttonPanelCubit.getState().xSize,
-                      widget.buttonPanelCubit.getState().ySize + 1);
-                  widget.buttonPanelCubit.refresh();
-                },
-                child: Text(
-                  '+',
-                  softWrap: false,
-                  overflow: TextOverflow.fade,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1!
-                      .copyWith(fontSize: 26),
-                ),
-              ),
-            ),
-          ],
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Form(
-                  key: _formKey,
-                  child: TextFormField(
-                    controller: folderNameController,
-                    validator: (value) {
-                      if (folderNameController.text.isEmpty) {
-                        return 'The name must not be empty';
-                      }
-                      return null;
+        Card(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 35,
+                  child: TextButton(
+                    onPressed: () {
+                      widget.buttonPanelCubit.setNewGridSize(
+                          widget.buttonPanelCubit.getState().xSize - 1,
+                          widget.buttonPanelCubit.getState().ySize);
+                      widget.buttonPanelCubit.refresh();
                     },
-                    decoration: const InputDecoration(
-                      labelText: "Folder name",
+                    child: Text(
+                      '-',
+                      softWrap: false,
+                      overflow: TextOverflow.fade,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1!
+                          .copyWith(fontSize: 30),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 120,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        widget.buttonPanelCubit.getState().xSize.toString(),
+                        softWrap: false,
+                        overflow: TextOverflow.fade,
+                        style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                            color: Theme.of(context).colorScheme.secondary,
+                            fontSize: 20),
+                      ),
+                      Text(
+                        ' ${widget.buttonPanelCubit.getState().xSize > 1 ? 'Columns' : 'Column'}',
+                        softWrap: false,
+                        overflow: TextOverflow.fade,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText1!
+                            .copyWith(fontSize: 20),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: 35,
+                  child: TextButton(
+                    onPressed: () {
+                      widget.buttonPanelCubit.setNewGridSize(
+                          widget.buttonPanelCubit.getState().xSize + 1,
+                          widget.buttonPanelCubit.getState().ySize);
+                      widget.buttonPanelCubit.refresh();
+                    },
+                    child: Text(
+                      '+',
+                      softWrap: false,
+                      overflow: TextOverflow.fade,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1!
+                          .copyWith(fontSize: 26),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 35,
+                    child: TextButton(
+                      onPressed: () {
+                        widget.buttonPanelCubit.setNewGridSize(
+                            widget.buttonPanelCubit.getState().xSize,
+                            widget.buttonPanelCubit.getState().ySize - 1);
+                        widget.buttonPanelCubit.refresh();
+                      },
+                      child: Text(
+                        '-',
+                        softWrap: false,
+                        overflow: TextOverflow.fade,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText1!
+                            .copyWith(fontSize: 30),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 120,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          widget.buttonPanelCubit.getState().ySize.toString(),
+                          softWrap: false,
+                          overflow: TextOverflow.fade,
+                          style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontSize: 20),
+                        ),
+                        Text(
+                          ' ${widget.buttonPanelCubit.getState().ySize > 1 ? 'Rows' : 'Row'}',
+                          softWrap: false,
+                          overflow: TextOverflow.fade,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1!
+                              .copyWith(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: 35,
+                    child: TextButton(
+                      onPressed: () {
+                        widget.buttonPanelCubit.setNewGridSize(
+                            widget.buttonPanelCubit.getState().xSize,
+                            widget.buttonPanelCubit.getState().ySize + 1);
+                        widget.buttonPanelCubit.refresh();
+                      },
+                      child: Text(
+                        '+',
+                        softWrap: false,
+                        overflow: TextOverflow.fade,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText1!
+                            .copyWith(fontSize: 26),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              ],
+          ),
+        ),
+        Card(
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+                  child: Form(
+                    key: _formKey,
+                    child: TextFormField(
+                      controller: folderNameController,
+                      validator: (value) {
+                        if (folderNameController.text.isEmpty) {
+                          return 'The name must not be empty';
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                        labelText: "Folder name",
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
+        ),
+        Card(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Center(
+                    child: Text(
+                      'Button border-radius',
+                      style:
+                      Theme.of(context).textTheme.headline6!.copyWith(fontSize: 16),
+                    )),
+              ),
+              Slider(
+                value: widget.buttonPanelCubit.getState().borderRadius,
+                min: 0,
+                max: 0.5,
+                divisions: 20,
+                label: '${(widget.buttonPanelCubit.getState().borderRadius*200).round()}%',
+                onChanged: (double value) {
+                  setState(() {
+                    widget.buttonPanelCubit.getState().borderRadius = value;
+                    widget.buttonPanelCubit.refresh();
+                  });
+                },
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -228,6 +266,7 @@ class _PanelSettingsState extends State<PanelSettings> {
         widget.buttonPanelCubit.refresh();
       }
     });
+
     super.initState();
   }
 }
