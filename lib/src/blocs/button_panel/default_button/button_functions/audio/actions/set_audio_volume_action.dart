@@ -29,7 +29,7 @@ class SetAudioVolumeAction extends ButtonAction {
       );
 
   @override
-  Map<String, String> getDefaultParams() => {'set-volume': '50'};
+  Map<String, String> getDefaultParams() => {'set-volume': '0.5'};
 
   @override
   bool isVisible(ButtonPanelCubit buttonPanelCubit) => true;
@@ -47,7 +47,7 @@ class SetAudioVolumeAction extends ButtonAction {
             "volume_set")
         .asFunction();
 
-    setVolume(int.parse(params['set-volume']!));
+    setVolume((double.parse(params['set-volume']??'0.5')*100).round());
 
     return Future.value();
   }
@@ -88,10 +88,11 @@ class __SetAudioVolumeActionSettingsState
             min: 0,
             max: 100,
             divisions: 100,
-            value: (int.parse(widget.params['set-volume'] ?? '50').toDouble()),
-            label: widget.params['set-volume'] ?? '50',
+            value: (double.parse(widget.params['set-volume'] ?? '0.5')*100).roundToDouble(),
+            label: '${(double.parse(widget.params['set-volume'] ?? '0.5'
+            )*100).round()}',
             onChanged: (double value) {
-              widget.params['set-volume'] = '${value.round()}';
+              widget.params['set-volume'] = '${(value/100)}';
               widget.madeChanges(widget.params);
               setState(() {});
             },

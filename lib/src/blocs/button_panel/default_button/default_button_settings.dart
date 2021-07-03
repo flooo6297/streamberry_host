@@ -12,8 +12,9 @@ import 'package:streamberry_host/src/blocs/button_panel/button_panel_cubit.dart'
 import 'package:streamberry_host/src/blocs/button_panel/default_button/button_functions/button_action.dart';
 import 'package:streamberry_host/src/blocs/button_panel/default_button/button_functions/button_functions.dart';
 import 'package:streamberry_host/src/blocs/button_panel/default_button/button_functions/on_click.dart';
-import 'package:streamberry_host/src/ui/custom_elements/alignment_slider.dart';
-import 'package:streamberry_host/src/ui/views/button_view/settings/tabs/button_settings/add_action_dialog.dart';
+import 'package:streamberry_host/src/blocs/button_panel/default_button/default_button.dart';
+import 'package:streamberry_host/src/blocs/button_panel/default_button/alignment_slider.dart';
+import 'package:streamberry_host/src/blocs/button_panel/default_button/add_action_dialog.dart';
 import 'package:uuid/uuid.dart';
 
 class DefaultButtonSettings extends StatefulWidget {
@@ -21,7 +22,10 @@ class DefaultButtonSettings extends StatefulWidget {
   final ButtonData selectedButton;
 
   final String selectedId;
-  const DefaultButtonSettings(this.buttonPanelCubit, this.selectedButton, {this.selectedId = '', Key? key}) : super(key: key);
+
+  const DefaultButtonSettings(this.buttonPanelCubit, this.selectedButton,
+      {this.selectedId = '', Key? key})
+      : super(key: key);
 
   @override
   _DefaultButtonSettingsState createState() => _DefaultButtonSettingsState();
@@ -34,22 +38,24 @@ class _DefaultButtonSettingsState extends State<DefaultButtonSettings> {
   List<Widget> options = [];
   List<MapEntry<ButtonAction, OnClick>> actions = [];
 
+  late DefaultButton defaultButton;
+
   @override
   void initState() {
-    buttonTextController = TextEditingController(text: widget.selectedButton.defaultButton!.text);
-    buttonTextSizeController = TextEditingController(text: '${(widget.selectedButton.defaultButton!.textSize).round()}');
+    defaultButton = (widget.selectedButton.buttonType as DefaultButton);
+    buttonTextController = TextEditingController(text: defaultButton.text);
+    buttonTextSizeController =
+        TextEditingController(text: '${(defaultButton.textSize).round()}');
     buttonTextController.addListener(() {
-      if (buttonTextController.text !=
-          widget.selectedButton.defaultButton!.text) {
-        widget.selectedButton.defaultButton!.text =
-            buttonTextController.text;
+      if (buttonTextController.text != defaultButton.text) {
+        defaultButton.text = buttonTextController.text;
         widget.buttonPanelCubit.refresh();
       }
     });
     buttonTextSizeController.addListener(() {
       if (buttonTextSizeController.text !=
-          '${widget.selectedButton.defaultButton!.textSize.round()}') {
-        widget.selectedButton.defaultButton!.textSize =
+          '${defaultButton.textSize.round()}') {
+        defaultButton.textSize =
             double.parse('${buttonTextSizeController.text}.0');
         widget.buttonPanelCubit.refresh();
       }
@@ -61,10 +67,8 @@ class _DefaultButtonSettingsState extends State<DefaultButtonSettings> {
   @override
   void didUpdateWidget(DefaultButtonSettings oldWidget) {
     if (oldWidget.selectedId != widget.selectedId) {
-      buttonTextSizeController.text =
-      '${(widget.selectedButton.defaultButton!.textSize).round()}';
-      buttonTextController.text =
-          widget.selectedButton.defaultButton!.text;
+      buttonTextSizeController.text = '${(defaultButton.textSize).round()}';
+      buttonTextController.text = defaultButton.text;
       _updateActions();
     }
 
@@ -73,22 +77,11 @@ class _DefaultButtonSettingsState extends State<DefaultButtonSettings> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.buttonPanelCubit.getState().selectedButton == null) {
-      return Container(
-        margin: const EdgeInsets.all(8.0),
-        alignment: Alignment.center,
-        child: const Text(
-          'Select a Button first',
-          overflow: TextOverflow.fade,
-          softWrap: false,
-        ),
-      );
-    }
 
-    bool snapToGrid = widget.selectedButton.defaultButton!.snapToGrid;
+    bool snapToGrid = defaultButton.snapToGrid;
 
-    return ListView(
-      padding: const EdgeInsets.all(8.0),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Card(
           child: Container(
@@ -110,63 +103,63 @@ class _DefaultButtonSettingsState extends State<DefaultButtonSettings> {
                   shrinkWrap: true,
                   children: List<int>.generate(options.length, (i) => i)
                       .map((index) => Stack(
-                    clipBehavior: Clip.none,
-                    key: ValueKey(options[index]),
-                    children: [
-                      Card(
-                        key: ValueKey(options[index]),
-                        color: Theme.of(context).backgroundColor,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 40.0),
-                          child: ConstrainedBox(
-                            constraints:
-                            const BoxConstraints(minHeight: 72),
-                            child: options[index],
-                          ),
-                        ),
-                      ),
-                      Positioned.directional(
-                        textDirection: Directionality.of(context),
-                        start: 4,
-                        end: 4,
-                        bottom: 4,
-                        top: 4,
-                        child: Align(
-                          alignment: AlignmentDirectional.topEnd,
-                          child: Visibility(
-                            visible: options.length > 1,
-                            child: ReorderableDragStartListener(
-                              index: index,
-                              child: const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Icon(Icons.reorder),
+                            clipBehavior: Clip.none,
+                            key: ValueKey(options[index]),
+                            children: [
+                              Card(
+                                key: ValueKey(options[index]),
+                                color: Theme.of(context).backgroundColor,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 40.0),
+                                  child: ConstrainedBox(
+                                    constraints:
+                                        const BoxConstraints(minHeight: 72),
+                                    child: options[index],
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Positioned.directional(
-                        textDirection: Directionality.of(context),
-                        start: 4,
-                        end: 4,
-                        bottom: 4,
-                        child: Align(
-                          alignment: AlignmentDirectional.bottomEnd,
-                          child: IconButton(
-                            onPressed: () {
-                              widget.selectedButton.defaultButton!.onClicks.removeAt(index);
-                              widget.buttonPanelCubit.refresh();
-                              _updateActions();
-                            },
-                            icon: const Icon(
-                              Icons.delete,
-                              color: Colors.redAccent,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ))
+                              Positioned.directional(
+                                textDirection: Directionality.of(context),
+                                start: 4,
+                                end: 4,
+                                bottom: 4,
+                                top: 4,
+                                child: Align(
+                                  alignment: AlignmentDirectional.topEnd,
+                                  child: Visibility(
+                                    visible: options.length > 1,
+                                    child: ReorderableDragStartListener(
+                                      index: index,
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Icon(Icons.reorder),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Positioned.directional(
+                                textDirection: Directionality.of(context),
+                                start: 4,
+                                end: 4,
+                                bottom: 4,
+                                child: Align(
+                                  alignment: AlignmentDirectional.bottomEnd,
+                                  child: IconButton(
+                                    onPressed: () {
+                                      defaultButton.onClicks.removeAt(index);
+                                      widget.buttonPanelCubit.refresh();
+                                      _updateActions();
+                                    },
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: Colors.redAccent,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ))
                       .toList(),
                   onReorder: (oldIndex, newIndex) {
                     //TODO: implement reorder!!!
@@ -240,16 +233,16 @@ class _DefaultButtonSettingsState extends State<DefaultButtonSettings> {
                             Expanded(
                               child: Slider(
                                 min: 0.0,
-                                max: widget.selectedButton.defaultButton!.textSize < 60.0
+                                max: defaultButton.textSize < 60.0
                                     ? 60.0
-                                    : widget.selectedButton.defaultButton!.textSize,
-                                value: widget.selectedButton.defaultButton!.textSize,
+                                    : defaultButton.textSize,
+                                value: defaultButton.textSize,
                                 onChanged: (newValue) {
-                                  widget.selectedButton.defaultButton!.textSize =
+                                  defaultButton.textSize =
                                       newValue.roundToDouble();
                                   widget.buttonPanelCubit.refresh();
                                   buttonTextSizeController.text =
-                                  '${newValue.round()}';
+                                      '${newValue.round()}';
                                 },
                               ),
                             ),
@@ -273,11 +266,9 @@ class _DefaultButtonSettingsState extends State<DefaultButtonSettings> {
                                       title: const Text('Pick a color!'),
                                       content: SingleChildScrollView(
                                         child: ColorPicker(
-                                          pickerColor: widget.selectedButton.defaultButton!
-                                              .textColor,
+                                          pickerColor: defaultButton.textColor,
                                           onColorChanged: (Color value) {
-                                            widget.selectedButton.defaultButton!
-                                                .textColor = value;
+                                            defaultButton.textColor = value;
                                             widget.buttonPanelCubit.refresh();
                                           },
                                         ),
@@ -289,7 +280,7 @@ class _DefaultButtonSettingsState extends State<DefaultButtonSettings> {
                               child: Container(
                                 height: 16,
                                 width: 30,
-                                color: widget.selectedButton.defaultButton!.textColor,
+                                color: defaultButton.textColor,
                               ),
                             ),
                           ],
@@ -318,11 +309,9 @@ class _DefaultButtonSettingsState extends State<DefaultButtonSettings> {
                           children: [
                             const Text('Snap to Grid: '),
                             Switch(
-                                value: widget.selectedButton.defaultButton!
-                                    .snapToGrid,
+                                value: defaultButton.snapToGrid,
                                 onChanged: (newValue) {
-                                  widget.selectedButton.defaultButton!
-                                      .snapToGrid = newValue;
+                                  defaultButton.snapToGrid = newValue;
                                   widget.buttonPanelCubit.refresh();
                                 }),
                           ],
@@ -347,47 +336,34 @@ class _DefaultButtonSettingsState extends State<DefaultButtonSettings> {
         Card(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: TextButton(
-              child: const Text('Pick Icon'),
-              onPressed: () async {
-                OpenFilePicker picker = OpenFilePicker();
-                picker.fileMustExist = true;
-                picker.filterSpecification = {
-                  'Image Files (*.jpg; *.gif; *.png)': '*.jpg;*.gif;*.png'
-                };
-                picker.title = 'Pick an Image';
-                File? file = picker.getFile();
-                if (file != null) {
-                  print(file.path);
-                  Uint8List imageBytes = await file.readAsBytes();
-                  Box<String> images = Hive.box('images');
-                  String currentImage = widget.selectedButton.defaultButton!.image;
-                  if (currentImage.isNotEmpty &&
-                      images.containsKey(currentImage)) {
-                    images.delete(currentImage);
+            child: SizedBox(
+              width: double.infinity,
+              child: TextButton(
+                child: const Text('Pick Icon'),
+                onPressed: () async {
+                  OpenFilePicker picker = OpenFilePicker();
+                  picker.fileMustExist = true;
+                  picker.filterSpecification = {
+                    'Image Files (*.jpg; *.gif; *.png)': '*.jpg;*.gif;*.png'
+                  };
+                  picker.title = 'Pick an Image';
+                  File? file = picker.getFile();
+                  if (file != null) {
+                    print(file.path);
+                    Uint8List imageBytes = await file.readAsBytes();
+                    Box<String> images = Hive.box('images');
+                    String currentImage = defaultButton.image;
+                    if (currentImage.isNotEmpty &&
+                        images.containsKey(currentImage)) {
+                      images.delete(currentImage);
+                    }
+                    String newImage = const Uuid().v1();
+                    images.put(newImage, base64Encode(imageBytes));
+                    defaultButton.image = newImage;
+                    widget.buttonPanelCubit.refresh();
                   }
-                  String newImage = const Uuid().v1();
-                  images.put(newImage, base64Encode(imageBytes));
-                  widget.selectedButton.defaultButton!.image = newImage;
-                  widget.buttonPanelCubit.refresh();
-                }
-              },
-            ),
-          ),
-        ),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextButton(
-              child: const Text(
-                'Delete This Button',
-                overflow: TextOverflow.fade,
-                softWrap: false,
+                },
               ),
-              onPressed: () {
-                widget.buttonPanelCubit.removeSelectedButton();
-                widget.buttonPanelCubit.refresh();
-              },
             ),
           ),
         ),
@@ -405,8 +381,8 @@ class _DefaultButtonSettingsState extends State<DefaultButtonSettings> {
           widget.buttonPanelCubit,
           widget.selectedButton,
           actions[i].value.params,
-              (newParams) {
-            widget.selectedButton.defaultButton!.onClicks[i].params = newParams;
+          (newParams) {
+            defaultButton.onClicks[i].params = newParams;
             widget.buttonPanelCubit.refresh();
           },
         ),

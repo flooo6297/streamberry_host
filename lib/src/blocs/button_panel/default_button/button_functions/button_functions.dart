@@ -39,8 +39,8 @@ abstract class ButtonFunctions {
 
   static List<MapEntry<ButtonAction, OnClick>> getActions(ButtonData buttonData) {
 
-    if (buttonData.defaultButton != null) {
-      return getActionsFromOnClicks(buttonData.defaultButton!.onClicks);
+    if (buttonData.buttonType is DefaultButton) {
+      return getActionsFromOnClicks((buttonData.buttonType as DefaultButton).onClicks);
     }
     return [];
 

@@ -162,9 +162,7 @@ class _AlignmentSliderState extends State<AlignmentSlider> {
                       widget.size,
                       pointerSizeHalf,
                     );
-                    (widget.buttonPanelCubit
-                        .getState()
-                        .selectedButton!.defaultButton!)
+                    (defaultButton)
                         .textAlignment = Alignment(alignment.x, alignment.y);
                     widget.buttonPanelCubit.refresh();
                   },
@@ -175,9 +173,7 @@ class _AlignmentSliderState extends State<AlignmentSlider> {
                       widget.size,
                       pointerSizeHalf,
                     );
-                    (widget.buttonPanelCubit
-                        .getState()
-                        .selectedButton!.defaultButton!)
+                    (defaultButton)
                         .textAlignment = Alignment(alignment.x, alignment.y);
                     widget.buttonPanelCubit.refresh();
                   },
@@ -263,18 +259,21 @@ class _AlignmentSliderState extends State<AlignmentSlider> {
     if ((oldWidget.selectedId != widget.selectedId &&
         widget.buttonPanelCubit.getState().selectedButton != null)) {
       _notifier.value =
-          (widget.buttonPanelCubit.getState().selectedButton!.defaultButton!).textAlignment;
+          (defaultButton).textAlignment;
     }
 
     _notifier.value =
-        (widget.buttonPanelCubit.getState().selectedButton!.defaultButton!).textAlignment;
+        (defaultButton).textAlignment;
     super.didUpdateWidget(oldWidget);
   }
+  
+  late DefaultButton defaultButton;
 
   @override
   void initState() {
+    defaultButton = (widget.buttonPanelCubit.getState().selectedButton!.buttonType as DefaultButton);
     _notifier = ValueNotifier(
-        (widget.buttonPanelCubit.getState().selectedButton!.defaultButton!).textAlignment);
+        (defaultButton).textAlignment);
 
     super.initState();
   }

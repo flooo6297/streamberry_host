@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
+import 'package:streamberry_host/src/blocs/button_panel/data_update_templates/data_update_template.dart';
 import 'package:streamberry_host/src/blocs/button_panel/default_button/button_functions/button_functions.dart';
 import 'package:streamberry_host/src/blocs/button_panel/default_button/button_functions/on_click.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_panel_cubit.dart';
@@ -16,7 +17,9 @@ class SocketHelper{
 
   String lastState = '';
 
-  void createNamespaces(ButtonPanelCubit buttonPanelCubit) {
+  String lastUpdate = '';
+
+  void init(ButtonPanelCubit buttonPanelCubit) {
     io  = Server();
 
     io.on('connection', (client) {
@@ -24,13 +27,50 @@ class SocketHelper{
       _listenToPanelDataRequest(client, buttonPanelCubit);
       _listenToGetImage(client, buttonPanelCubit);
       _listenToRunActions(client, buttonPanelCubit);
+      _listenToUpdateRequest(client, buttonPanelCubit);
       notifyClients(buttonPanelCubit.state, force: true);
+
+
+
+
+      client.on('disconnect', (_) {
+        print('client disconnected');
+        client.disconnect(true);
+      });
 
     });
 
 
     io.listen(3000);
 
+    DataUpdateTemplate.getUpdates();
+    var subscription = DataUpdateTemplate.dataUpdateStream.stream.listen((event) {
+      String update = jsonEncode(event);
+      if (update != lastUpdate) {
+        lastUpdate = update;
+        _sendUpdate(update);
+      }
+    });
+
+    io.on('disconnect', (_) {
+      subscription.cancel();
+      DataUpdateTemplate.dispose();
+    });
+
+  }
+
+  void _listenToUpdateRequest(
+      Socket client, ButtonPanelCubit buttonPanelCubit) {
+    client.on('requestUpdate', (data) {
+      print('data update requested');
+      _sendUpdate(lastUpdate);
+    });
+  }
+
+  void _sendUpdate(String update) {
+    String toTransfer = update;
+    io.emit('dataUpdate', toTransfer);
+    print('send update');
   }
 
   void notifyClients(ButtonPanelState buttonPanelState, {bool force = false}) {

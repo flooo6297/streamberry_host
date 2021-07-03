@@ -20,10 +20,30 @@ class _ButtonSettingsState extends State<ButtonSettings> {
     if (widget.buttonPanelCubit.getState().selectedButton != null) {
       ButtonData buttonData =
           widget.buttonPanelCubit.getState().selectedButton!;
-      if (buttonData.defaultButton != null) {
-        return buttonData.defaultButton!.buildSettings(
-            widget.buttonPanelCubit, buttonData, widget.selectedId);
-      }
+      return ListView(
+        padding: EdgeInsets.all(8.0),
+        children: [
+          buttonData.buttonType.buildSettings(
+                widget.buttonPanelCubit, buttonData, widget.selectedId),
+
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextButton(
+                child: const Text(
+                  'Delete Selected Element',
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                ),
+                onPressed: () {
+                  widget.buttonPanelCubit.removeSelectedButton();
+                  widget.buttonPanelCubit.refresh();
+                },
+              ),
+            ),
+          ),
+        ],
+      );
     }
     return Container();
   }

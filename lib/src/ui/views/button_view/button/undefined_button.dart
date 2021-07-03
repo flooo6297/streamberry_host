@@ -3,29 +3,37 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_data.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_panel_cubit.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_panel_state.dart';
+import 'package:streamberry_host/src/blocs/button_panel/button_type.dart';
+import 'package:streamberry_host/src/blocs/button_panel/data_update_templates/data_update_template.dart';
 import 'package:streamberry_host/src/blocs/button_panel/default_button/default_button.dart';
+import 'package:streamberry_host/src/blocs/button_panel/slider_button/slider_button.dart';
 
 class UndefinedButton extends StatelessWidget {
   final ButtonData buttonData;
   final ButtonPanelCubit buttonPanelCubit;
 
   const UndefinedButton(
-      this.buttonData,
-      this.buttonPanelCubit,{
-        Key? key,
-      }) : super(key: key);
+    this.buttonData,
+    this.buttonPanelCubit, {
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
-    ButtonData nonDefinedButtonData = buttonPanelCubit.getState().nonDefinedButtonDesign;
+    ButtonData nonDefinedButtonData =
+        buttonPanelCubit.getState().nonDefinedButtonDesign;
 
     double borderRadius = 0.0;
 
-    if (buttonPanelCubit.getState().gridTilingSize.width > buttonPanelCubit.getState().gridTilingSize.height) {
-      borderRadius = (buttonPanelCubit.getState().gridTilingSize.height-buttonPanelCubit.getState().margin.vertical)*buttonPanelCubit.getState().borderRadius;
+    if (buttonPanelCubit.getState().gridTilingSize.width >
+        buttonPanelCubit.getState().gridTilingSize.height) {
+      borderRadius = (buttonPanelCubit.getState().gridTilingSize.height -
+              buttonPanelCubit.getState().margin.vertical) *
+          buttonPanelCubit.getState().borderRadius;
     } else {
-      borderRadius = (buttonPanelCubit.getState().gridTilingSize.width-buttonPanelCubit.getState().margin.horizontal)*buttonPanelCubit.getState().borderRadius;
+      borderRadius = (buttonPanelCubit.getState().gridTilingSize.width -
+              buttonPanelCubit.getState().margin.horizontal) *
+          buttonPanelCubit.getState().borderRadius;
     }
 
     return Stack(
@@ -33,13 +41,18 @@ class UndefinedButton extends StatelessWidget {
         Positioned(
           left: 0,
           top: 0,
-          height: buttonPanelCubit.getState().gridTilingSize.height * buttonData.height,
-          width: buttonPanelCubit.getState().gridTilingSize.width * buttonData.width,
+          height: buttonPanelCubit.getState().gridTilingSize.height *
+              buttonData.height,
+          width: buttonPanelCubit.getState().gridTilingSize.width *
+              buttonData.width,
           child: Container(
             margin: buttonPanelCubit.getState().margin,
             decoration: BoxDecoration(
               color: Colors.transparent,
-              border: Border.all(color: (nonDefinedButtonData.defaultButton!).color, width: nonDefinedButtonData.borderWidth),
+              border: Border.all(
+                  color:
+                      (nonDefinedButtonData.buttonType as DefaultButton).color,
+                  width: nonDefinedButtonData.borderWidth),
               borderRadius: BorderRadius.circular(borderRadius),
             ),
           ),
@@ -54,23 +67,45 @@ class UndefinedButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
               color: Colors.black.withAlpha(128),
             ),
-            child: IconButton(
-              color: Colors.white,
-              icon: const Icon(
-                Icons.add,
-                size: 14.0,
-              ),
-              onPressed: () {
-                buttonData.enabled = true;
-                buttonPanelCubit.selectButton(buttonData);
-                buttonPanelCubit.getSelectedButton()!.enabled = true;
-                buttonPanelCubit.refresh();
+            child: PopupMenuButton(
+              itemBuilder: (context) {
+                return ButtonType.types.entries.map((type) {
+                  ButtonType buttonType = type.value();
+                  return PopupMenuItem(
+                    child: TextButton(
+                      onPressed: () {
+                        buttonData.enabled = true;
+                        buttonData.buttonType = buttonType;
+                        buttonPanelCubit.selectButton(buttonData);
+                        buttonPanelCubit.getSelectedButton()!.enabled = true;
+                        buttonPanelCubit.refresh();
+                        Navigator.of(context).pop();
+                      },
+                      child: Row(
+                        children: [
+                          Icon(buttonType.listIcon),
+                          SizedBox(width: 8.0),
+                          Text(buttonType.name),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList();
               },
+              child: Container(
+                height: 32,
+                width: 32,
+                child: Center(
+                  child: const Icon(
+                    Icons.add,
+                    size: 14.0,
+                  ),
+                ),
+              ),
             ),
           ),
         ),
       ],
     );
   }
-
 }

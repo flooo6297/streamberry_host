@@ -20,7 +20,7 @@ class DefaultButtonWidget extends StatefulWidget {
 class _DefaultButtonWidgetState extends State<DefaultButtonWidget> {
   @override
   Widget build(BuildContext context) {
-    DefaultButton defaultButton = widget.buttonData.defaultButton!;
+    DefaultButton defaultButton = widget.buttonData.buttonType as DefaultButton;
 
     double borderRadius = 0.0;
 

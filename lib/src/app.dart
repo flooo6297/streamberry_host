@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:streamberry_host/src/blocs/button_panel/data_update_templates/data_update_template.dart';
 import 'package:streamberry_host/src/blocs/socket/socket_helper.dart';
 import 'package:streamberry_host/src/ui/views/button_view/button_view.dart';
 
@@ -52,7 +53,7 @@ class _AppState extends State<App> {
   void initState() {
     _socketHelper = SocketHelper();
     buttonPanelCubit = ButtonPanelCubit.init(8, 4, _socketHelper);
-    _socketHelper.createNamespaces(buttonPanelCubit);
+    _socketHelper.init(buttonPanelCubit);
 
     super.initState();
   }

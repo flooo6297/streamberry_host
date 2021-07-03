@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_type.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_panel_state.dart';
+import 'package:streamberry_host/src/blocs/button_panel/button_type.dart';
 import 'package:streamberry_host/src/blocs/button_panel/default_button/default_button.dart';
 import 'package:uuid/uuid.dart';
 
@@ -23,16 +24,14 @@ class ButtonData {
   late int positionX;
   late int positionY;
 
-  @JsonKey(includeIfNull: false)
-  DefaultButton? defaultButton;
+  @JsonKey(fromJson: _buttonTypeFromJson, toJson: _buttonTypeToJson)
+  late ButtonType buttonType;
 
-  get canBeOverwritten => (!enabled && ((defaultButton==null)?true:defaultButton!.canBeOverwritten));
+  get canBeOverwritten => (!enabled && buttonType.canBeOverwritten);
 
   void delete() {
     enabled = false;
-    if (defaultButton != null) {
-      defaultButton!.delete();
-    }
+    buttonType.delete();
   }
 
   ButtonData(
@@ -43,12 +42,12 @@ class ButtonData {
     this.childState,
     this.enabled = true,
     this.borderWidth = 3.0,
-    DefaultButton? defaultButton,
+    ButtonType? buttonType,
     String? id,
   })  : assert(height > 0),
         assert(width > 0) {
     this.id = id ?? const Uuid().v1();
-    this.defaultButton = defaultButton??DefaultButton();
+    this.buttonType = buttonType??DefaultButton();
   }
 
   bool overlaps(ButtonData button) {
@@ -83,3 +82,7 @@ class ButtonData {
     return ButtonData.fromJson(jsonDecode(jsonEncode(toJson())));
   }
 }
+
+String _buttonTypeToJson(ButtonType buttonType) => jsonEncode(
+    {'type': buttonType.type, 'data': buttonType.toJson()});
+ButtonType _buttonTypeFromJson(String json) => ButtonType.fromJson(jsonDecode(json));

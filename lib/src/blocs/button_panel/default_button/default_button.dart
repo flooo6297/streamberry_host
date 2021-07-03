@@ -14,7 +14,7 @@ part 'default_button.g.dart';
 @JsonSerializable()
 class DefaultButton extends ButtonType {
   @ColorSerializer()
-  late Color color;
+  Color color = Colors.white24;
 
   List<OnClick> onClicks = [];
 
@@ -22,15 +22,15 @@ class DefaultButton extends ButtonType {
 
   String text = '';
 
-  late double textSize;
+  double textSize = 14.0;
 
   @AlignmentSerializer()
-  late Alignment textAlignment;
+  Alignment textAlignment = Alignment.center;
 
-  late bool snapToGrid;
+  bool snapToGrid = true;
 
   @JsonKey(defaultValue: 0xFFFFFFFF)
-  late int textColorValue;
+  int textColorValue = 0xFFFFFFFF;
 
   @JsonKey(ignore: true)
   Color get textColor => Color(textColorValue);
@@ -63,6 +63,7 @@ class DefaultButton extends ButtonType {
   factory DefaultButton.fromJson(Map<String, dynamic> json) =>
       _$DefaultButtonFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$DefaultButtonToJson(this);
 
   @override
@@ -81,4 +82,10 @@ class DefaultButton extends ButtonType {
         buttonData,
         selectedId: id,
       );
+
+  @override
+  String get name => 'Normal Button';
+
+  @override
+  IconData get listIcon => Icons.touch_app;
 }

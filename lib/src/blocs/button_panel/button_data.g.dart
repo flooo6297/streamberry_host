@@ -17,31 +17,20 @@ ButtonData _$ButtonDataFromJson(Map<String, dynamic> json) {
         : ButtonPanelState.fromJson(json['childState'] as Map<String, dynamic>),
     enabled: json['enabled'] as bool,
     borderWidth: (json['borderWidth'] as num).toDouble(),
-    defaultButton: json['defaultButton'] == null
-        ? null
-        : DefaultButton.fromJson(json['defaultButton'] as Map<String, dynamic>),
+    buttonType: _buttonTypeFromJson(json['buttonType'] as String),
     id: json['id'] as String?,
   );
 }
 
-Map<String, dynamic> _$ButtonDataToJson(ButtonData instance) {
-  final val = <String, dynamic>{
-    'id': instance.id,
-    'enabled': instance.enabled,
-    'borderWidth': instance.borderWidth,
-    'childState': instance.childState,
-    'height': instance.height,
-    'width': instance.width,
-    'positionX': instance.positionX,
-    'positionY': instance.positionY,
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('defaultButton', instance.defaultButton);
-  return val;
-}
+Map<String, dynamic> _$ButtonDataToJson(ButtonData instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'enabled': instance.enabled,
+      'borderWidth': instance.borderWidth,
+      'childState': instance.childState,
+      'height': instance.height,
+      'width': instance.width,
+      'positionX': instance.positionX,
+      'positionY': instance.positionY,
+      'buttonType': _buttonTypeToJson(instance.buttonType),
+    };

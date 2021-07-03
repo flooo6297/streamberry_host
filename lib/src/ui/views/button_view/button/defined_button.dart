@@ -28,7 +28,7 @@ class DefinedButton extends StatelessWidget {
           top: 0,
           height: buttonPanelCubit.getState().gridTilingSize.height * buttonData.height,
           width: buttonPanelCubit.getState().gridTilingSize.width * buttonData.width,
-          child: buttonData.defaultButton!.buildButton(buttonPanelCubit, buttonData),
+          child: buttonData.buttonType.buildButton(buttonPanelCubit, buttonData),
         ),
         ..._buildResizeButtons(context),
       ],

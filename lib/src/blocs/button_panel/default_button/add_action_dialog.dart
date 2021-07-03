@@ -5,6 +5,7 @@ import 'package:streamberry_host/src/blocs/button_panel/default_button/button_fu
 import 'package:streamberry_host/src/blocs/button_panel/default_button/button_functions/folder/folder_functions.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_panel_cubit.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_panel_state.dart';
+import 'package:streamberry_host/src/blocs/button_panel/default_button/default_button.dart';
 
 class AddActionDialog extends StatefulWidget {
   final ButtonPanelCubit buttonPanelCubit;
@@ -54,8 +55,8 @@ class _AddActionDialogState extends State<AddActionDialog> {
                       Text(action.title),
                       TextButton(
                           onPressed: () {
-                            widget.buttonPanelCubit
-                                .getSelectedButton()!.defaultButton!
+                            (widget.buttonPanelCubit
+                                .getSelectedButton()!.buttonType as DefaultButton)
                                 .onClicks
                                 .add(action.toOnClick());
 
