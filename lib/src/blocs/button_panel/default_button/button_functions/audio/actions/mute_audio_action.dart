@@ -61,14 +61,14 @@ class MuteAudioAction extends ButtonAction {
       ButtonPanelCubit buttonPanelCubit, Map<String, String> params) async {
     final kbd = calloc<INPUT>();
     kbd.ref.type = INPUT_KEYBOARD;
-    kbd.ki.wVk = VK_VOLUME_MUTE;
+    kbd.ref.ki.wVk = VK_VOLUME_MUTE;
     var result = SendInput(1, kbd, ffi.sizeOf<INPUT>());
 
     Sleep(100);
 
     kbd.ref.type = INPUT_KEYBOARD;
-    kbd.ki.wVk = VK_VOLUME_MUTE;
-    kbd.ki.dwFlags = KEYEVENTF_KEYUP;
+    kbd.ref.ki.wVk = VK_VOLUME_MUTE;
+    kbd.ref.ki.dwFlags = KEYEVENTF_KEYUP;
     result = SendInput(1, kbd, ffi.sizeOf<INPUT>());
 
     /*kbd.ref.type = INPUT_KEYBOARD;

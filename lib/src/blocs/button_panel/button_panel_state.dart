@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_data.dart';
-import 'package:streamberry_host/src/json_converters/color_serializer.dart';
-import 'package:streamberry_host/src/json_converters/edge_insets_serializer.dart';
-import 'package:streamberry_host/src/json_converters/size_serializer.dart';
+import 'package:streamberry_host/src/json_converters/color_serializers/button_panel_background_color_serializer.dart';
+import 'package:streamberry_host/src/json_converters/color_serializers/default_button_color_serializer.dart';
+import 'package:streamberry_host/src/json_converters/edge_insets_serializers/edge_insets_serializer.dart';
+import 'package:streamberry_host/src/json_converters/size_serializers/size_serializer.dart';
 
 part 'button_panel_state.g.dart';
 
@@ -24,7 +25,7 @@ class ButtonPanelState {
   @SizeSerializer()
   late Size gridTilingSize;
 
-  @ColorSerializer()
+  @ButtonPanelBackgroundColorSerializer()
   late Color backgroundColor;
 
   @EdgeInsetsSerializer()

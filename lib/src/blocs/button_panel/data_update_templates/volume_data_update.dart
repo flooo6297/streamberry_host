@@ -5,16 +5,23 @@ import 'dart:io' show Platform;
 
 class VolumeDataUpdate extends DataUpdateTemplate {
 
-  final ffi.DynamicLibrary volumeLib = ffi.DynamicLibrary.open(Platform.script
-      .resolve('build/windows/volume_library/Debug/volume.dll')
-  //.resolve('data/volume_get.dll')
-      .toFilePath(windows: true));
+  late final ffi.DynamicLibrary volumeLib;
+
+  late final int Function() getVolume;
+
+  VolumeDataUpdate() {
+    volumeLib = ffi.DynamicLibrary.open(Platform.script
+        .resolve('build/windows/volume_library/Debug/volume.dll')
+    //.resolve('data/volume_get.dll')
+        .toFilePath(windows: true));
+
+    getVolume = volumeLib
+        .lookup<ffi.NativeFunction<ffi.Uint32 Function()>>("volume_get")
+        .asFunction();
+  }
 
   @override
   Future<MapEntry<String, String>> getUpdate() async {
-    final int Function() getVolume = volumeLib
-        .lookup<ffi.NativeFunction<ffi.Uint32 Function()>>("volume_get")
-        .asFunction();
 
     return MapEntry(type, '${getVolume()/100}');
 

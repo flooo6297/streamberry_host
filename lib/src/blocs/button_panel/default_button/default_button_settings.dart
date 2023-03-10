@@ -67,9 +67,11 @@ class _DefaultButtonSettingsState extends State<DefaultButtonSettings> {
   @override
   void didUpdateWidget(DefaultButtonSettings oldWidget) {
     if (oldWidget.selectedId != widget.selectedId) {
+      defaultButton = (widget.selectedButton.buttonType as DefaultButton);
       buttonTextSizeController.text = '${(defaultButton.textSize).round()}';
       buttonTextController.text = defaultButton.text;
       _updateActions();
+      //initState();
     }
 
     super.didUpdateWidget(oldWidget);

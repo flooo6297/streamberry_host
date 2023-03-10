@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:obs_websocket/obsWebsocket.dart';
+import 'package:obs_websocket/obs_websocket.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_data.dart';
 import 'package:streamberry_host/src/blocs/button_panel/default_button/button_functions/button_action.dart';
 import 'package:streamberry_host/src/blocs/button_panel/default_button/button_functions/obs/obs_functions.dart';
@@ -153,7 +153,7 @@ class SetSceneAction extends ButtonAction {
       await getCubit().reconnect();
     }
     if (getCubit().state != null) {
-      await getCubit().state!.setCurrentScene({"scene-name": params["scene-name"]});
+      await getCubit().state!.setCurrentScene(params["scene-name"]!);
     }
     return Future.value();
   }

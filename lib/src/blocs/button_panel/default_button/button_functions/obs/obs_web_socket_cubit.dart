@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:obs_websocket/obsWebsocket.dart';
+import 'package:obs_websocket/obs_websocket.dart';
 
 class ObsWebSocketCubit extends Cubit<ObsWebSocket?> {
 

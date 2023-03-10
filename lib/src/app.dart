@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:streamberry_host/src/blocs/button_panel/data_update_templates/data_update_template.dart';
 import 'package:streamberry_host/src/blocs/socket/socket_helper.dart';
+import 'package:streamberry_host/src/config_loaders/plugin_loaders/plugin_loader.dart';
 import 'package:streamberry_host/src/ui/views/button_view/button_view.dart';
 
 import 'blocs/button_panel/button_panel_cubit.dart';
@@ -15,17 +16,20 @@ import 'blocs/button_panel/button_panel_state.dart';
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
 
-  static ButtonPanelState buttonPanelStateOf(BuildContext context) => buttonPanelCubitOf(context).state;
-  static ButtonPanelCubit buttonPanelCubitOf(BuildContext context) => context.findAncestorStateOfType<_AppState>()!.buttonPanelCubit;
-  static SocketHelper socketHelperOf(BuildContext context) => context.findAncestorStateOfType<_AppState>()!._socketHelper;
+  static ButtonPanelState buttonPanelStateOf(BuildContext context) =>
+      buttonPanelCubitOf(context).state;
+
+  static ButtonPanelCubit buttonPanelCubitOf(BuildContext context) =>
+      context.findAncestorStateOfType<_AppState>()!.buttonPanelCubit;
+
+  static SocketHelper socketHelperOf(BuildContext context) =>
+      context.findAncestorStateOfType<_AppState>()!._socketHelper;
 
   @override
   _AppState createState() => _AppState();
-
 }
 
 class _AppState extends State<App> {
-
   late final SocketHelper _socketHelper;
 
   late final ButtonPanelCubit buttonPanelCubit;
@@ -33,20 +37,21 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(
-      future: _initWindowOptions(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-        return MaterialApp(
-            themeMode: ThemeMode.dark,
-            theme: ThemeData.light(),
-            darkTheme: ThemeData.dark(),
-            home: ButtonView(buttonPanelCubit: buttonPanelCubit));
-      }
-    );
+        future: _initWindowOptions(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return MaterialApp(
+              themeMode: ThemeMode.dark,
+              theme: ThemeData.light(),
+              darkTheme: ThemeData.dark(),
+              home: PluginLoader(
+                child: ButtonView(buttonPanelCubit: buttonPanelCubit),
+              ));
+        });
   }
 
   @override
@@ -59,10 +64,8 @@ class _AppState extends State<App> {
   }
 
   Future<bool> _initWindowOptions() async {
-
     await DesktopWindow.setMinWindowSize(Size(800, 400));
 
     return true;
   }
-
 }

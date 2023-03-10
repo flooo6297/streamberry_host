@@ -44,10 +44,10 @@ class TypeTextAction extends ButtonAction {
     var result;
 
     for (int i = 0; i < textToType.length; i++) {
-      kbd.ki.wVk = 0;
+      kbd.ref.ki.wVk = 0;
       kbd.ref.type = INPUT_KEYBOARD;
-      kbd.ki.wScan = unicode.toRune(textToType[i]);
-      kbd.ki.dwFlags = KEYEVENTF_UNICODE;
+      kbd.ref.ki.wScan = unicode.toRune(textToType[i]);
+      kbd.ref.ki.dwFlags = KEYEVENTF_UNICODE;
       result = SendInput(1, kbd, ffi.sizeOf<INPUT>());
     }
 

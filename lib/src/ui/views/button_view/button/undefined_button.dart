@@ -67,27 +67,25 @@ class UndefinedButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
               color: Colors.black.withAlpha(128),
             ),
-            child: PopupMenuButton(
+            child: PopupMenuButton<ButtonType>(
+              onSelected: (buttonType) {
+                buttonData.enabled = true;
+                buttonData.buttonType = buttonType;
+                buttonPanelCubit.selectButton(buttonData);
+                buttonPanelCubit.getSelectedButton()!.enabled = true;
+                buttonPanelCubit.refresh();
+              },
               itemBuilder: (context) {
                 return ButtonType.types.entries.map((type) {
                   ButtonType buttonType = type.value();
-                  return PopupMenuItem(
-                    child: TextButton(
-                      onPressed: () {
-                        buttonData.enabled = true;
-                        buttonData.buttonType = buttonType;
-                        buttonPanelCubit.selectButton(buttonData);
-                        buttonPanelCubit.getSelectedButton()!.enabled = true;
-                        buttonPanelCubit.refresh();
-                        Navigator.of(context).pop();
-                      },
-                      child: Row(
-                        children: [
-                          Icon(buttonType.listIcon),
-                          SizedBox(width: 8.0),
-                          Text(buttonType.name),
-                        ],
-                      ),
+                  return PopupMenuItem<ButtonType>(
+                    value: buttonType,
+                    child: Row(
+                      children: [
+                        Icon(buttonType.listIcon),
+                        SizedBox(width: 8.0),
+                        Text(buttonType.name),
+                      ],
                     ),
                   );
                 }).toList();

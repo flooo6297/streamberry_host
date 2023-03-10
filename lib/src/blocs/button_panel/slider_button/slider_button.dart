@@ -10,8 +10,10 @@ import 'package:streamberry_host/src/blocs/button_panel/default_button/button_fu
 import 'package:streamberry_host/src/blocs/button_panel/default_button/button_functions/button_functions.dart';
 import 'package:streamberry_host/src/blocs/button_panel/default_button/button_functions/on_click.dart';
 import 'package:streamberry_host/src/blocs/button_panel/slider_button/slider_button_widget.dart';
-import 'package:streamberry_host/src/json_converters/axis_serializer.dart';
-import 'package:streamberry_host/src/json_converters/color_serializer.dart';
+import 'package:streamberry_host/src/json_converters/axis_serializers/vertical_axis_serializer.dart';
+import 'package:streamberry_host/src/json_converters/color_serializers/default_button_color_serializer.dart';
+import 'package:streamberry_host/src/json_converters/color_serializers/slider_button_background_color_serializer.dart';
+import 'package:streamberry_host/src/json_converters/color_serializers/slider_button_foreground_color_serializer.dart';
 
 part 'slider_button.g.dart';
 
@@ -19,13 +21,13 @@ part 'slider_button.g.dart';
 class SliderButton extends ButtonType {
 
 
-  @AxisSerializer()
+  @VerticalAxisSerializer()
   Axis axis = Axis.vertical;
 
-  @ColorSerializer()
+  @SliderButtonBackgroundColorSerializer()
   Color backgroundColor = Colors.white24;
 
-  @ColorSerializer()
+  @SliderButtonForegroundColorSerializer()
   Color foregroundColor = Colors.greenAccent;
 
   OnClick onClick = ButtonFunctions.functions['audioFunctions']!.actions()['setAudioVolumeAction']!.toOnClick();

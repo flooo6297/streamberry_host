@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:streamberry_host/src/blocs/button_panel/button_data.dart';
@@ -6,14 +8,18 @@ import 'package:streamberry_host/src/blocs/button_panel/button_type.dart';
 import 'package:streamberry_host/src/blocs/button_panel/default_button/button_functions/on_click.dart';
 import 'package:streamberry_host/src/blocs/button_panel/default_button/default_button_settings.dart';
 import 'package:streamberry_host/src/blocs/button_panel/default_button/default_button_widget.dart';
-import 'package:streamberry_host/src/json_converters/alignment_serializer.dart';
-import 'package:streamberry_host/src/json_converters/color_serializer.dart';
+import 'package:streamberry_host/src/json_converters/alignment_serializers/center_alignment_serializer.dart';
+import 'package:streamberry_host/src/json_converters/color_serializers/default_button_color_serializer.dart';
 
 part 'default_button.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class DefaultButton extends ButtonType {
-  @ColorSerializer()
+
+  @DefaultButtonColorSerializer()
+  Color testColor = Colors.white;
+
+  @DefaultButtonColorSerializer()
   Color color = Colors.white24;
 
   List<OnClick> onClicks = [];
@@ -24,7 +30,7 @@ class DefaultButton extends ButtonType {
 
   double textSize = 14.0;
 
-  @AlignmentSerializer()
+  @CenterAlignmentSerializer()
   Alignment textAlignment = Alignment.center;
 
   bool snapToGrid = true;
@@ -89,3 +95,6 @@ class DefaultButton extends ButtonType {
   @override
   IconData get listIcon => Icons.touch_app;
 }
+String _buttonTypeToJson(ButtonType buttonType) => jsonEncode(
+    {'type': buttonType.type, 'data': buttonType.toJson()});
+ButtonType _buttonTypeFromJson(String json) => ButtonType.fromJson(jsonDecode(json));

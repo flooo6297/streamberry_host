@@ -15,6 +15,9 @@ class ButtonSettings extends StatefulWidget {
 }
 
 class _ButtonSettingsState extends State<ButtonSettings> {
+
+
+
   @override
   Widget build(BuildContext context) {
     if (widget.buttonPanelCubit.getState().selectedButton != null) {
@@ -46,5 +49,17 @@ class _ButtonSettingsState extends State<ButtonSettings> {
       );
     }
     return Container();
+  }
+
+  @override
+  void didUpdateWidget(ButtonSettings oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.selectedId != widget.selectedId) {
+      setState(() {
+
+      });
+    }
+
   }
 }
